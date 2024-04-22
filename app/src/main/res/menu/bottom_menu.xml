@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home"
+        android:icon="@drawable/ic_action_home"
+        android:title="@string/title_home" />
+
+    <item
+        android:id="@+id/gyms"
+        android:icon="@drawable/ic_action_map"
+        android:title="@string/title_gyms" />
+
+    <item
+        android:id="@+id/profile"
+        android:icon="@drawable/ic_baseline_person_24"
+        android:title="@string/title_profile" />
+
+    <item
+        android:id="@+id/store"
+        android:icon="@drawable/ic_action_local_grocery_store"
+        android:title="@string/title_store" />
+
+</menu>

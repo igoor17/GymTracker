@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1069417755670",
+    "project_id": "gymtracker-156c1",
+    "storage_bucket": "gymtracker-156c1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1069417755670:android:f7c87b5fb65ba476f07137",
+        "android_client_info": {
+          "package_name": "es.eduardo.gymtracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1069417755670-1elajudruc0vq1d7bfo16tqf3pl04vui.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "es.eduardo.gymtracker",
+            "certificate_hash": "1e197e95a8823495536aa5360478f72e7ff45b8c"
+          }
+        },
+        {
+          "client_id": "1069417755670-t1ks7c4hl5bn0165ne0s1044q7gu00mv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_AF0wYDWKswZwe4kBcOZw2aSavndDYtg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1069417755670-t1ks7c4hl5bn0165ne0s1044q7gu00mv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
