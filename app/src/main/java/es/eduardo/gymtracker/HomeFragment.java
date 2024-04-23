@@ -11,11 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import es.eduardo.gymtracker.R;
-import es.eduardo.gymtracker.muscular_groups.ArmsFragment;
-import es.eduardo.gymtracker.muscular_groups.BackFragment;
-import es.eduardo.gymtracker.muscular_groups.ChestFragment;
-import es.eduardo.gymtracker.muscular_groups.LegsFragment;
+import es.eduardo.gymtracker.muscular_groups.ExcercisesFragment;
 
 
 public class HomeFragment extends Fragment {
@@ -34,19 +30,31 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Fragment fragment;
+                Bundle bundle = new Bundle();
                 int id = v.getId();
                 if (id == R.id.chest) {
-                    fragment = new ChestFragment();
+                    bundle.putString("muscleGroup", "chest");
+                    fragment = new ExcercisesFragment();
                 } else if (id == R.id.back) {
-                    fragment = new BackFragment();
+                    bundle.putString("muscleGroup", "back");
+                    fragment = new ExcercisesFragment();
                 } else if (id == R.id.arms) {
-                    fragment = new ArmsFragment();
+                    bundle.putString("muscleGroup", "arms");
+                    fragment = new ExcercisesFragment();
                 } else if (id == R.id.legs) {
-                    fragment = new LegsFragment();
+                    bundle.putString("muscleGroup", "legs");
+                    fragment = new ExcercisesFragment();
+                } else if (id == R.id.abs) {
+                    bundle.putString("muscleGroup", "abs");
+                    fragment = new ExcercisesFragment();
+                } else if (id == R.id.shoulders) {
+                    bundle.putString("muscleGroup", "shoulders");
+                    fragment = new ExcercisesFragment();
                 } else {
                     throw new IllegalStateException("Unexpected value: " + id);
                 }
 
+                fragment.setArguments(bundle);
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.frame_layout, fragment);

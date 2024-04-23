@@ -22,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
 
         binding.bottomNavigationView.setBackground(null);
 
+        replaceFragment(new HomeFragment());
+
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
 
             int itemId = item.getItemId();
