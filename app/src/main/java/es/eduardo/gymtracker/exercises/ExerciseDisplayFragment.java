@@ -1,4 +1,4 @@
-package es.eduardo.gymtracker.muscular_groups;
+package es.eduardo.gymtracker.exercises;
 
 import android.os.Bundle;
 
