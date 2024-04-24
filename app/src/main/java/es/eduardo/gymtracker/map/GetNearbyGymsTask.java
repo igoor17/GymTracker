@@ -114,10 +114,18 @@ public class GetNearbyGymsTask {
                 double lat = element.getDouble("lat");
                 double lon = element.getDouble("lon");
 
-                // Aquí asumimos que cada gimnasio tiene un nombre, lo cual puede no ser cierto en todos los casos
-                String name = element.getJSONObject("tags").getString("name");
+                // Se obtienen los datos del gimnasio desde el JSON
+                // Se utiliza optString en lugar de getString para evitar excepciones en caso de que no exista el campo
+                String name = element.getJSONObject("tags").optString("name");
+                String street = element.getJSONObject("tags").optString("addr:street");
+                String number = element.getJSONObject("tags").optString("addr:housenumber");
+                String city = element.getJSONObject("tags").optString("addr:city");
+                String postalCode = element.getJSONObject("tags").optString("addr:postcode");
+                String phoneNumber = element.getJSONObject("tags").optString("phone");
 
-                gimnasios.add(new Gimnasio(name, lat, lon));
+                String address = street + " " + number + ", " + city + ", " + postalCode;
+
+                gimnasios.add(new Gimnasio(name,address,phoneNumber ,lat, lon));
                 Log.d("OverpassAPI", "Parsed " + gimnasios.size() + " gyms from JSON");
             }
         } catch (Exception e) {
