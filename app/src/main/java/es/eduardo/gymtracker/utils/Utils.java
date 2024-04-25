@@ -1,71 +1,43 @@
 package es.eduardo.gymtracker.utils;
 
+import android.content.Context;
+
+import es.eduardo.gymtracker.R;
+
 public class Utils {
 
-    public static String checkAdult(int age, float result) {
-        String category;
-        if (age >= 2 && age <= 19) {
-            category = getAdultCategory(result);
-        } else {
-            category = getChildCategory(result);
-        }
-        return category;
-    }
-
-    private static String getAdultCategory(float result) {
+    public static String getCategory(float result, Context context) {
         String category;
         if (result < 15) {
-            category = "Severe Thinness";
+            category = context.getString(R.string.severe_thinness);
         } else if (result >= 15.0 && result <= 16.0) {
-            category = "Moderate Thinness";
+            category = context.getString(R.string.moderate_thinness);
         } else if (result > 16 && result <= 18.5) {
-            category = "Mild Thinness";
+            category = context.getString(R.string.mild_thinness);
         } else if (result > 18.5 && result <= 25) {
-            category = "Normal";
+            category = context.getString(R.string.normal_weight);
         } else if (result > 25 && result <= 30) {
-            category = "Overweight";
+            category = context.getString(R.string.overweight);
         } else if (result > 30 && result <= 35) {
-            category = "Obese Class I";
+            category = context.getString(R.string.moderately_obese);
         } else if (result > 35 && result <= 40) {
-            category = "Obese Class II";
+            category = context.getString(R.string.severely_obese);
         } else {
-            category = "Obese Class III";
+            category = context.getString(R.string.very_severely_obese);
         }
         return category;
     }
 
-    private static String getChildCategory(float result) {
-        String category;
-        if (result < 15) {
-            category = "very severely underweight";
-        } else if (result >= 15.0 && result <= 16.0) {
-            category = "severely underweight";
-        } else if (result > 16 && result <= 18.5) {
-            category = "underweight";
-        } else if (result > 18.5 && result <= 25) {
-            category = "normal (healthy weight)";
-        } else if (result > 25 && result <= 30) {
-            category = "overweight";
-        } else if (result > 30 && result <= 35) {
-            category = "moderately obese";
-        } else if (result > 35 && result <= 40) {
-            category = "severely obese";
-        } else {
-            category = "very severely obese";
-        }
-        return category;
-    }
-
-    public static String getSuggestions(float result) {
+    public static String getSuggestions(float result, Context context) {
         String suggestion;
         if (result < 18.5) {
-            suggestion = "A BMI of under 18.5 indicates that a person has insufficient weight, so they may need to put on some weight. They should ask a doctor or dietitian for advice.";
+            suggestion = context.getString(R.string.underweight_suggestion);
         } else if (result >= 18.5 && result < 25) {
-            suggestion = "A BMI of 18.5–24.9 indicates that a person has a healthy weight for their height. By maintaining a healthy weight, they can lower their risk of developing serious health problems.";
+            suggestion = context.getString(R.string.normal_weight_suggestion);
         } else if (result >= 25 && result < 30) {
-            suggestion = "A BMI of 25–29.9 indicates that a person is slightly overweight. A doctor may advise them to lose some weight for health reasons. They should talk with a doctor or dietitian for advice.";
+            suggestion = context.getString(R.string.overweight_suggestion);
         } else {
-            suggestion = "A BMI of over 30 indicates that a person has obesity. Their health may be at risk if they do not lose weight. They should talk with a doctor or dietitian for advice.";
+            suggestion = context.getString(R.string.obese_suggestion);
         }
         return suggestion;
     }

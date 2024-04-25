@@ -29,6 +29,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import es.eduardo.gymtracker.utils.Utils;
+
 public class LoginActivity extends AppCompatActivity {
     //Firebase
     FirebaseAuth mAuth;

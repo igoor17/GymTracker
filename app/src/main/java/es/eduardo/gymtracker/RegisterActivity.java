@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,7 +23,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +36,7 @@ public class RegisterActivity extends AppCompatActivity {
     //Firebase
     FirebaseFirestore db;
     FirebaseAuth mAuth;
+    FirebaseStorage storage;
     //UI
     EditText name, username, email, password, confirmPassword;
     Button signUpButton;
@@ -38,8 +46,8 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         mAuth = FirebaseAuth.getInstance();
-
         db = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
 
         name = findViewById(R.id.signup_name);
         username = findViewById(R.id.signup_username);
@@ -98,6 +106,37 @@ public class RegisterActivity extends AppCompatActivity {
                                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                         @Override
                                                                         public void onSuccess(Void aVoid) {
+                                                                            // Convert the drawable to a bitmap
+                                                                            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_profile);
+
+                                                                            // Convert the bitmap to a byte array
+                                                                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                                                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                                                                            byte[] data = baos.toByteArray();
+
+                                                                            // Create a reference to 'images/userID.jpg'
+                                                                            StorageReference imageRef = storage.getReference().child("images/" + user.getEmail() + ".jpg");
+
+                                                                            // Upload the byte array to Firebase Storage
+                                                                            UploadTask uploadTask = imageRef.putBytes(data);
+                                                                            uploadTask.addOnFailureListener(new OnFailureListener() {
+                                                                                @Override
+                                                                                public void onFailure(@NonNull Exception exception) {
+                                                                                    // Handle unsuccessful uploads
+                                                                                }
+                                                                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                                                                @Override
+                                                                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                                                                    // Get the download URL and update Firestore
+                                                                                    imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                                                        @Override
+                                                                                        public void onSuccess(Uri uri) {
+                                                                                            db.collection("users").document(user.getEmail())
+                                                                                                    .update("imageUrl", uri.toString());
+                                                                                        }
+                                                                                    });
+                                                                                }
+                                                                            });
                                                                             Toast.makeText(RegisterActivity.this, "Account created.",
                                                                                     Toast.LENGTH_SHORT).show();
                                                                             // Switch to the NewUserInfoActivity

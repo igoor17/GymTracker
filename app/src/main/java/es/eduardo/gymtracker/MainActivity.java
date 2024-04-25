@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import es.eduardo.gymtracker.databinding.ActivityMainBinding;
 import es.eduardo.gymtracker.map.GymsFragment;
+import es.eduardo.gymtracker.profile.ProfileFragment;
 
 public class MainActivity extends AppCompatActivity {
 

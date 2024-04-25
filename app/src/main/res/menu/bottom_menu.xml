@@ -12,13 +12,12 @@
         android:title="@string/title_gyms" />
 
     <item
-        android:id="@+id/profile"
-        android:icon="@drawable/ic_baseline_person_24"
-        android:title="@string/title_profile" />
-
-    <item
         android:id="@+id/store"
         android:icon="@drawable/ic_action_local_grocery_store"
         android:title="@string/title_store" />
+    <item
+        android:id="@+id/profile"
+        android:icon="@drawable/ic_baseline_person_24"
+        android:title="@string/title_profile" />
 
 </menu>

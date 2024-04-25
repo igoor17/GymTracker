@@ -68,8 +68,8 @@ public class ImcActivity extends AppCompatActivity {
                                     // Mostrar resultados
                                     ageTxt.setText(String.valueOf(age));
                                     imcTxt.setText(String.format("%.2f", imc));
-                                    conditionTxt.setText(Utils.checkAdult(age, (float) imc));
-                                    suggestionTxt.setText(Utils.getSuggestions((float) imc));
+                                    conditionTxt.setText(Utils.getCategory((float) imc,this));
+                                    suggestionTxt.setText(Utils.getSuggestions((float) imc, this));
                                 })
                                 .addOnFailureListener(e -> {
                                     Toast.makeText(ImcActivity.this, "Error saving IMC", Toast.LENGTH_SHORT).show();

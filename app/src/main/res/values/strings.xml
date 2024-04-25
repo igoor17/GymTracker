@@ -68,4 +68,26 @@
     <string name="description">Description:</string>
     <string name="group">Group:</string>
     <string name="add_to_favorites">Add to Favorites</string>
+    <string name="very_severely_underweight">Very severely underweight</string>
+    <string name="severely_underweight">Severely underweight</string>
+    <string name="underweight">Underweight</string>
+    <string name="normal_weight">Normal weight</string>
+    <string name="overweight">Overweight</string>
+    <string name="moderately_obese">Moderately obese</string>
+    <string name="severely_obese">Severely obese</string>
+    <string name="very_severely_obese">Very severely obese</string>
+    <string name="underweight_suggestion">A BMI of under 18.5 indicates that a person has insufficient weight, so they may need to put on some weight. They should ask a doctor or dietitian for advice.</string>
+    <string name="normal_weight_suggestion">A BMI of 18.5–24.9 indicates that a person has a healthy weight for their height. By maintaining a healthy weight, they can lower their risk of developing serious health problems.</string>
+    <string name="overweight_suggestion">A BMI of 25–29.9 indicates that a person is slightly overweight. A doctor may advise them to lose some weight for health reasons. They should talk with a doctor or dietitian for advice.</string>
+    <string name="obese_suggestion">A BMI of over 30 indicates that a person has obesity. Their health may be at risk if they do not lose weight. They should talk with a doctor or dietitian for advice.</string>
+    <string name="severe_thinness">Severe Thinness</string>
+    <string name="moderate_thinness">Moderate Thinness\n</string>
+    <string name="mild_thinness">Mild Thinness</string>
+    <string name="profile_name">"Name: "</string>
+    <string name="profile_email">"Email: "</string>
+    <string name="profile_age">"Age: "</string>
+    <string name="profile_your_bmi">"Your BMI: "</string>
+    <string name="profile_weight">"Weight: "</string>
+    <string name="profile_height">"Height: "</string>
+    <string name="save">Save changes</string>
 </resources>
