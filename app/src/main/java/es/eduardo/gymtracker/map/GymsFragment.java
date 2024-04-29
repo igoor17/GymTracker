@@ -2,14 +2,14 @@ package es.eduardo.gymtracker.map;
 
 import android.location.LocationManager;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -32,10 +32,11 @@ import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class GymsFragment extends Fragment {
 
@@ -44,6 +45,7 @@ public class GymsFragment extends Fragment {
     private MapView mapView;
     private MyLocationNewOverlay locationOverlay;
     private OverpassAPI overpassAPI;
+    private Executor executor;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,7 +68,30 @@ public class GymsFragment extends Fragment {
         locationOverlay.setDrawAccuracyEnabled(true);
         mapView.getOverlays().add(locationOverlay);
 
+        mapView.addMapListener(new DelayedMapListener(new MapListener() {
+            @Override
+            public boolean onScroll(ScrollEvent event) {
+                if (locationOverlay != null) {
+                    locationOverlay.disableFollowLocation();
+                }
+                updateGymsOnMap();
+                return true;
+            }
+
+            @Override
+            public boolean onZoom(ZoomEvent event) {
+                if (locationOverlay != null) {
+                    locationOverlay.disableFollowLocation();
+                }
+                updateGymsOnMap();
+                return true;
+            }
+        }, 1000));
+
         overpassAPI = new OverpassAPI();
+
+        // Initialize the executor
+        executor = Executors.newSingleThreadExecutor();
 
         return view;
     }
@@ -78,23 +103,6 @@ public class GymsFragment extends Fragment {
 
         locationOverlay.enableMyLocation();
 
-        mapView.addMapListener(new DelayedMapListener(new MapListener() {
-            @Override
-            public boolean onScroll(ScrollEvent event) {
-                locationOverlay.disableFollowLocation();
-                updateGymsOnMap();
-                return true;
-            }
-
-            @Override
-            public boolean onZoom(ZoomEvent event) {
-                locationOverlay.disableFollowLocation();
-                updateGymsOnMap();
-                return true;
-            }
-        }, 1000));
-
-
     }
 
     @Override
@@ -103,7 +111,24 @@ public class GymsFragment extends Fragment {
         mapView.onPause();
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (locationOverlay != null) {
+            locationOverlay.disableMyLocation();
+            locationOverlay = null;
+        }
+        if (mapView != null) {
+            mapView.onDetach();
+            mapView = null;
+        }
+    }
+
     private void updateGymsOnMap() {
+        if(mapView == null) {
+            Log.e("GymsFragment", "MapView is null");
+            return;
+        }
         // Obtén el área visible del mapa
         BoundingBox visibleArea = mapView.getBoundingBox();
 
@@ -123,21 +148,26 @@ public class GymsFragment extends Fragment {
                         for (Gimnasio gimnasio : gimnasios) {
                             GeoPoint gymLocation = new GeoPoint(gimnasio.getLatitud(), gimnasio.getLongitud());
 
-                            Marker gymMarker = new Marker(mapView);
-                            gymMarker.setPosition(gymLocation);
-                            gymMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-                            gymMarker.setTitle(gimnasio.getNombre());
+                            if (mapView != null) {
+                                Marker gymMarker = new Marker(mapView);
+                                gymMarker.setPosition(gymLocation);
+                                gymMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                                gymMarker.setTitle(gimnasio.getNombre());
 
-                            gymMarker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
-                                @Override
-                                public boolean onMarkerClick(Marker marker, MapView mapView) {
-                                    gymMarker.setInfoWindow(new GymInfoWindow(R.layout.popup_gyms, mapView, gimnasio, mAuth, db));
-                                    gymMarker.showInfoWindow();
-                                    return true;
-                                }
-                            });
+                                gymMarker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+                                    @Override
+                                    public boolean onMarkerClick(Marker marker, MapView mapView) {
+                                        gymMarker.setInfoWindow(new GymInfoWindow(R.layout.popup_gyms, mapView, gimnasio, mAuth, db));
+                                        gymMarker.showInfoWindow();
+                                        return true;
+                                    }
+                                });
 
-                            mapView.getOverlays().add(gymMarker);
+                                mapView.getOverlays().add(gymMarker);
+                            } else {
+                                Log.e("GymsFragment", "MapView is null");
+                                return;
+                            }
                         }
 
                         mapView.getOverlays().add(locationOverlay);
@@ -151,32 +181,39 @@ public class GymsFragment extends Fragment {
 
 
     private void saveGymToFavorites(Gimnasio gimnasio) {
-        db = FirebaseFirestore.getInstance();
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                // Obtiene la instancia de Firestore y de FirebaseAuth
+                db = FirebaseFirestore.getInstance();
+                mAuth = FirebaseAuth.getInstance();
 
-        // Obtén el ID del usuario actual
-        String userEmail = mAuth.getInstance().getCurrentUser().getEmail();
+                // Obtén el ID del usuario actual
+                String userEmail = mAuth.getCurrentUser().getEmail();
 
-        // Crea un nuevo documento para el gimnasio
-        Map<String, Object> gym = new HashMap<>();
-        gym.put("name", gimnasio.getNombre());
-        gym.put("address", gimnasio.getAddress());
-        gym.put("phone", gimnasio.getPhoneNumber());
-        gym.put("lat", gimnasio.getLatitud());
-        gym.put("lon", gimnasio.getLongitud());
+                // Crea un nuevo documento para el gimnasio
+                Map<String, Object> gym = new HashMap<>();
+                gym.put("name", gimnasio.getNombre());
+                gym.put("address", gimnasio.getAddress());
+                gym.put("phone", gimnasio.getPhoneNumber());
+                gym.put("lat", gimnasio.getLatitud());
+                gym.put("lon", gimnasio.getLongitud());
 
-        // Guardar el gimnasio en la colección de favoritos del usuario
-        db.collection("users").document(userEmail).collection("favorites").add(gym)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d("GymFragment", "Gym added to favorites with ID: " + documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("GymFragment", "Error adding gym to favorites", e);
-                    }
-                });
+                // Guarda el gimnasio en la colección de favoritos del usuario
+                db.collection("users").document(userEmail).collection("favorites").document(gimnasio.getNombre()).set(gym)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d("GymFragment", "Gym added to favorites with ID: " + gimnasio.getNombre());
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w("GymFragment", "Error adding gym to favorites", e);
+                            }
+                        });
+            }
+        });
     }
 }

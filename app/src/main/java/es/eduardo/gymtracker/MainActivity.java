@@ -18,7 +18,7 @@ import es.eduardo.gymtracker.profile.ProfileFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int REQUEST_LOCATION_PERMISSION = 1;
+    private static final int REQUEST_LOCATION_PERMISSION = 1; // Código de solicitud para permiso de ubicación
     ActivityMainBinding binding;
 
     @Override

@@ -39,21 +39,29 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class EditProfileFragment extends Fragment {
 
-    private static final int PICK_IMAGE_REQUEST = 1;
-    private Uri imageUri;
+    private static final int PICK_IMAGE_REQUEST = 1; // Código de solicitud para seleccionar una imagen
+    private Uri imageUri; // URI de la imagen seleccionada
+
+    // Firebase
     private FirebaseUser user;
     private FirebaseFirestore db;
     private StorageReference storageRef;
 
+    // UI
     Button saveButton;
     EditText profileNameEdit;
     EditText profileAgeEdit;
     EditText profileHeightEdit;
     EditText profileWeightEdit;
     ImageView profileImage;
+
+    // Executor
+    private Executor executor;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,6 +72,9 @@ public class EditProfileFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         storageRef = FirebaseStorage.getInstance().getReference();
 
+        // Initialize the executor
+        executor = Executors.newSingleThreadExecutor();
+
         profileNameEdit = view.findViewById(R.id.profile_name_edit);
         profileAgeEdit = view.findViewById(R.id.profile_age_edit);
         profileHeightEdit = view.findViewById(R.id.profile_height_edit);
@@ -71,17 +82,21 @@ public class EditProfileFragment extends Fragment {
         profileImage = view.findViewById(R.id.profile_image);
 
         // Obtén la información del usuario y establece los valores en los EditText
-        db.collection("users").document(user.getEmail())
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        profileNameEdit.setText(documentSnapshot.getString("name"));
-                        profileAgeEdit.setText(documentSnapshot.getString("age"));
-                        profileHeightEdit.setText(documentSnapshot.getString("height"));
-                        profileWeightEdit.setText(documentSnapshot.getString("weight"));
-                    }
-                });
+        executor.execute(() -> {
+            db.collection("users").document(user.getEmail())
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            getActivity().runOnUiThread(() -> {
+                                profileNameEdit.setText(documentSnapshot.getString("name"));
+                                profileAgeEdit.setText(documentSnapshot.getString("age"));
+                                profileHeightEdit.setText(documentSnapshot.getString("height"));
+                                profileWeightEdit.setText(documentSnapshot.getString("weight"));
+                            });
+                        }
+                    });
+        });
 
         ImageButton editImageButton = view.findViewById(R.id.edit_image_button);
         editImageButton.setOnClickListener(new View.OnClickListener() {

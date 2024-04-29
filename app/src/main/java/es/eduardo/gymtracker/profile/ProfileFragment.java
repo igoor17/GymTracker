@@ -14,20 +14,23 @@ import android.widget.TextView;
 
 import es.eduardo.gymtracker.R;
 
-
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class ProfileFragment extends Fragment {
 
+    // Firebase
     private FirebaseUser user;
     private FirebaseFirestore db;
+
+    // UI
     private ImageButton editProfileButton;
     TextView profileName;
     TextView profileAge;
@@ -35,6 +38,9 @@ public class ProfileFragment extends Fragment {
     TextView profileWeight;
     TextView profileImc;
     ImageView profileImage;
+
+    // Executor
+    private Executor executor;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,6 +50,9 @@ public class ProfileFragment extends Fragment {
         user = FirebaseAuth.getInstance().getCurrentUser();
         db = FirebaseFirestore.getInstance();
 
+        // Initialize the executor
+        executor = Executors.newSingleThreadExecutor();
+
         profileName = view.findViewById(R.id.profile_name);
         profileAge = view.findViewById(R.id.profile_age);
         profileHeight = view.findViewById(R.id.profile_height);
@@ -52,26 +61,30 @@ public class ProfileFragment extends Fragment {
         profileImage = view.findViewById(R.id.profile_image);
 
         // Obtén la información del usuario y establece los valores en los TextViews
-        db.collection("users").document(user.getEmail())
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        profileName.setText(documentSnapshot.getString("name"));
-                        profileAge.setText(documentSnapshot.getString("age"));
-                        profileHeight.setText(documentSnapshot.getString("height"));
-                        profileWeight.setText(documentSnapshot.getString("weight"));
-                        profileImc.setText(String.valueOf(documentSnapshot.getDouble("bmi")));
+        executor.execute(() -> {
+            db.collection("users").document(user.getEmail())
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            getActivity().runOnUiThread(() -> {
+                                profileName.setText(documentSnapshot.getString("name"));
+                                profileAge.setText(documentSnapshot.getString("age"));
+                                profileHeight.setText(documentSnapshot.getString("height"));
+                                profileWeight.setText(documentSnapshot.getString("weight"));
+                                profileImc.setText(String.valueOf(documentSnapshot.getDouble("bmi")));
 
-                        // Cargar la imagen del usuario en el ImageView
-                        String imageUrl = documentSnapshot.getString("imageUrl");
-                        if (imageUrl != null) {
-                            Glide.with(getActivity())
-                                    .load(imageUrl)
-                                    .into(profileImage);
+                                // Cargar la imagen del usuario en el ImageView
+                                String imageUrl = documentSnapshot.getString("imageUrl");
+                                if (imageUrl != null) {
+                                    Glide.with(getActivity())
+                                            .load(imageUrl)
+                                            .into(profileImage);
+                                }
+                            });
                         }
-                    }
-                });
+                    });
+        });
 
         editProfileButton = view.findViewById(R.id.edit_profile_button);
         editProfileButton.setOnClickListener(new View.OnClickListener() {

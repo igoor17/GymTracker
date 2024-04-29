@@ -19,7 +19,7 @@ import java.util.List;
 
 import es.eduardo.gymtracker.R;
 
-public class ExcercisesFragment extends Fragment {
+public class ExercisesFragment extends Fragment {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private List<String> exerciseNames = new ArrayList<>();
     private String muscleGroup;

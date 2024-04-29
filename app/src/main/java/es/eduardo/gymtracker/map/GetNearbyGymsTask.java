@@ -1,6 +1,5 @@
 package es.eduardo.gymtracker.map;
 
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -18,17 +17,18 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-
 public class GetNearbyGymsTask {
-    private static final String OVERPASS_API_URL = "http://overpass-api.de/api/interpreter?data=";
+    private static final String OVERPASS_API_URL = "http://overpass-api.de/api/interpreter?data="; // URL de la API de Overpass
 
+    // Coordenadas que delimitan la zona de búsqueda
     private double latitudInferior;
     private double longitudInferior;
     private double latitudSuperior;
     private double longitudSuperior;
-    private GymCallback callback;
-    private ExecutorService executorService;
-    private Handler handler;
+
+    private GymCallback callback; // Interfaz para recibir los gimnasios encontrados
+    private ExecutorService executorService; // Executor para ejecutar la tarea en un hilo en segundo plano
+    private Handler handler; // Handler para ejecutar código en el hilo principal
 
     public GetNearbyGymsTask(double latitudInferior, double longitudInferior, double latitudSuperior, double longitudSuperior, GymCallback callback) {
         this.latitudInferior = latitudInferior;
@@ -55,7 +55,7 @@ public class GetNearbyGymsTask {
         });
     }
 
-    protected List<Gimnasio> doInBackground(Void... voids) {
+    protected List<Gimnasio> doInBackground() {
         String query = "[out:json];node[\"leisure\"=\"fitness_centre\"](" +
                 (latitudInferior) + "," + (longitudInferior) + "," +
                 (latitudSuperior) + "," + (longitudSuperior) + ");out;";

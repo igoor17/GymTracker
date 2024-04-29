@@ -19,6 +19,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 
 public class NewUserInfoActivity extends AppCompatActivity {
@@ -52,6 +54,9 @@ public class NewUserInfoActivity extends AppCompatActivity {
     //NextButton
     Button nextButton;
 
+    //Executor
+    Executor executor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +77,8 @@ public class NewUserInfoActivity extends AppCompatActivity {
         femaleTxt = findViewById(R.id.femaleTxt);
         nextButton= findViewById(R.id.nextButton);
 
+        // Initialize the executor
+        executor = Executors.newSingleThreadExecutor();
 
         seekBarProgress();
         weightUserProgress();
@@ -95,26 +102,28 @@ public class NewUserInfoActivity extends AppCompatActivity {
             user.put("gender", genderValue);
 
 
-
             // Get the current user's email
             String userEmail = mAuth.getCurrentUser().getEmail();
 
             // Update the user's information in the database
-            db.collection("users").document(userEmail)
-                    .update(user)
-                    .addOnSuccessListener(aVoid -> {
-                        // User information updated successfully
-                        // Redirect the user to the next activity
-                        Intent intent = new Intent(NewUserInfoActivity.this, ImcActivity.class);
-                        startActivity(intent);
-                    })
-                    .addOnFailureListener(e -> {
-                        // User information failed to update
-                        // Display an error message to the user
-                        Toast.makeText(NewUserInfoActivity.this, "Failed to update user information", Toast.LENGTH_SHORT).show();
-                    });
+            executor.execute(() -> {
+                db.collection("users").document(userEmail)
+                        .update(user)
+                        .addOnSuccessListener(aVoid -> {
+                            // User information updated successfully
+                            // Redirect the user to the next activity
+                            Intent intent = new Intent(NewUserInfoActivity.this, ImcActivity.class);
+                            startActivity(intent);
+                        })
+                        .addOnFailureListener(e -> {
+                            // User information failed to update
+                            // Display an error message to the user
+                            runOnUiThread(() -> Toast.makeText(NewUserInfoActivity.this, "Failed to update user information", Toast.LENGTH_SHORT).show());
+                        });
+            });
         });
     }
+
 
     private void seekBarProgress() {
 

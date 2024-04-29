@@ -29,6 +29,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 import es.eduardo.gymtracker.utils.Utils;
 
 public class LoginActivity extends AppCompatActivity {
@@ -44,6 +47,8 @@ public class LoginActivity extends AppCompatActivity {
     TextView RedirectSignUpText;
     TextView RedirectForgotPassText;
     Button googleLoginButton;
+
+    Executor executor = Executors.newSingleThreadExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,64 +130,89 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String usernameOrEmail = username.getText().toString();
-                String passwordText = password.getText().toString();
+                executor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        String usernameOrEmail = username.getText().toString();
+                        String passwordText = password.getText().toString();
 
-                if(usernameOrEmail.isEmpty() || passwordText.isEmpty()) {
-                    return;
-                }
+                        if(usernameOrEmail.isEmpty() || passwordText.isEmpty()) {
+                            return;
+                        }
 
-                // Primero, intenta buscar el nombre de usuario en Firestore
-                db.collection("users")
-                        .whereEqualTo("username", usernameOrEmail)
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    if (!task.getResult().isEmpty()) {
-                                        // El nombre de usuario existe, obtener el correo electrónico
-                                        String email = task.getResult().getDocuments().get(0).getString("email");
+                        // Primero, intenta buscar el nombre de usuario en Firestore
+                        db.collection("users")
+                                .whereEqualTo("username", usernameOrEmail)
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            if (!task.getResult().isEmpty()) {
+                                                // El nombre de usuario existe, obtener el correo electrónico
+                                                String email = task.getResult().getDocuments().get(0).getString("email");
 
-                                        // Iniciar sesión con FirebaseAuth
-                                        mAuth.signInWithEmailAndPassword(email, passwordText)
-                                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                                        if (task.isSuccessful()) {
-                                                            // Inicio de sesión exitoso
-                                                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                                            startActivity(intent);
-                                                        } else {
-                                                            // Si el inicio de sesión falla, mostrar un mensaje al usuario
-                                                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                                                    Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    }
-                                                });
-                                    } else {
-                                        // El nombre de usuario no existe, intenta iniciar sesión asumiendo que la entrada es un correo electrónico
-                                        mAuth.signInWithEmailAndPassword(usernameOrEmail, passwordText)
-                                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                                        if (task.isSuccessful()) {
-                                                            // Inicio de sesión exitoso
-                                                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                                            startActivity(intent);
-                                                        } else {
-                                                            // Si el inicio de sesión falla, mostrar un mensaje al usuario
-                                                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                                                    Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    }
-                                                });
+                                                // Iniciar sesión con FirebaseAuth
+                                                mAuth.signInWithEmailAndPassword(email, passwordText)
+                                                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                                                if (task.isSuccessful()) {
+                                                                    // Inicio de sesión exitoso
+                                                                    runOnUiThread(new Runnable() {
+                                                                        @Override
+                                                                        public void run() {
+                                                                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                                                            startActivity(intent);
+                                                                        }
+                                                                    });
+                                                                } else {
+                                                                    // Si el inicio de sesión falla, mostrar un mensaje al usuario
+                                                                    runOnUiThread(new Runnable() {
+                                                                        @Override
+                                                                        public void run() {
+                                                                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                                                                    Toast.LENGTH_SHORT).show();
+                                                                        }
+                                                                    });
+                                                                }
+                                                            }
+                                                        });
+                                            } else {
+                                                // El nombre de usuario no existe, intenta iniciar sesión asumiendo que la entrada es un correo electrónico
+                                                mAuth.signInWithEmailAndPassword(usernameOrEmail, passwordText)
+                                                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                                                if (task.isSuccessful()) {
+                                                                    // Inicio de sesión exitoso
+                                                                    runOnUiThread(new Runnable() {
+                                                                        @Override
+                                                                        public void run() {
+                                                                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                                                            startActivity(intent);
+                                                                        }
+                                                                    });
+                                                                } else {
+                                                                    // Si el inicio de sesión falla, mostrar un mensaje al usuario
+                                                                    runOnUiThread(new Runnable() {
+                                                                        @Override
+                                                                        public void run() {
+                                                                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                                                                    Toast.LENGTH_SHORT).show();
+                                                                        }
+                                                                    });
+                                                                }
+                                                            }
+                                                        });
+                                            }
+                                        } else {
+                                            Log.d("Firestore Error", "Error getting documents: ", task.getException());
+                                        }
                                     }
-                                } else {
-                                    Log.d("Firestore Error", "Error getting documents: ", task.getException());
-                                }
-                            }
-                        });
+                                });
+                    }
+                });
             }
         });
     }
