@@ -91,4 +91,8 @@
     <string name="profile_height">"Height: "</string>
     <string name="save">Save changes</string>
     <string name="no_routines">No routines available</string>
+    <string name="failed_update_user">Failed to update user information</string>
+    <string name="location_granted">Location permission granted</string>
+    <string name="add_gym_fav">Gym added to favorites</string>
+    <string name="error_gym_fav">Error adding gym to favorites</string>
 </resources>

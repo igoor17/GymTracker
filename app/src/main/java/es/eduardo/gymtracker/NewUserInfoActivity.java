@@ -118,7 +118,7 @@ public class NewUserInfoActivity extends AppCompatActivity {
                         .addOnFailureListener(e -> {
                             // User information failed to update
                             // Display an error message to the user
-                            runOnUiThread(() -> Toast.makeText(NewUserInfoActivity.this, "Failed to update user information", Toast.LENGTH_SHORT).show());
+                            runOnUiThread(() -> Toast.makeText(NewUserInfoActivity.this, getString(R.string.failed_update_user), Toast.LENGTH_SHORT).show());
                         });
             });
         });

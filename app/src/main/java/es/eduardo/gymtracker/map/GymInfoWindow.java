@@ -77,14 +77,14 @@ public class GymInfoWindow extends BasicInfoWindow {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d("GymFragment", "Gym added to favorites with ID: " + gimnasio.getNombre());
-                        Toast.makeText(mView.getContext(), "Gym added to favorites", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mView.getContext(), mView.getContext().getString(R.string.add_gym_fav), Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.w("GymFragment", "Error adding gym to favorites", e);
-                        Toast.makeText(mView.getContext(), "Error adding gym to favorites", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mView.getContext(), mView.getContext().getString(R.string.error_gym_fav), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
