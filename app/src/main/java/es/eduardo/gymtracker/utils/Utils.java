@@ -41,4 +41,23 @@ public class Utils {
         }
         return suggestion;
     }
+
+    public static String getTranslatedMuscleGroup(String muscleGroup, Context context) {
+        switch (muscleGroup.toLowerCase()) {
+            case "back":
+                return context.getString(R.string.muscle_group_back);
+            case "chest":
+                return context.getString(R.string.muscle_group_chest);
+            case "arms":
+                return context.getString(R.string.muscle_group_arms);
+            case "legs":
+                return context.getString(R.string.muscle_group_legs);
+            case "shoulders":
+                return context.getString(R.string.muscle_group_shoulders);
+            case "abs":
+                return context.getString(R.string.muscle_group_abs);
+            default:
+                return muscleGroup;
+        }
+    }
 }

@@ -94,4 +94,10 @@
     <string name="location_granted">Location permission granted</string>
     <string name="add_gym_fav">Gym added to favorites</string>
     <string name="error_gym_fav">Error adding gym to favorites</string>
+    <string name="muscle_group_back">Back</string>
+    <string name="muscle_group_chest">Chest</string>
+    <string name="muscle_group_arms">Arms</string>
+    <string name="muscle_group_legs">Legs</string>
+    <string name="muscle_group_shoulders">Shoulders</string>
+    <string name="muscle_group_abs">Abs</string>
 </resources>

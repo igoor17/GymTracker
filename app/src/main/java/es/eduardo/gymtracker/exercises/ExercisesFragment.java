@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import es.eduardo.gymtracker.R;
+import es.eduardo.gymtracker.utils.Utils;
 
 public class ExercisesFragment extends Fragment {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -34,8 +35,17 @@ public class ExercisesFragment extends Fragment {
         GridView exercisesGridView = view.findViewById(R.id.exercisesGridView);
 
         if (getArguments() != null) {
+            String language = getResources().getConfiguration().locale.getLanguage();
+            String exercisesText;
             muscleGroup = getArguments().getString("muscleGroup");
-            exercisesTextView.setText(muscleGroup + " " + getString(R.string.exercises));
+
+            if (language.equals("es")) { // Si el idioma es español
+                exercisesText = getString(R.string.exercises) + " de " + Utils.getTranslatedMuscleGroup(muscleGroup,getActivity());
+            } else { // Si el idioma es inglés
+                exercisesText = muscleGroup + " " + getString(R.string.exercises);
+            }
+
+            exercisesTextView.setText(exercisesText);
         }
 
         db.collection(muscleGroup)
