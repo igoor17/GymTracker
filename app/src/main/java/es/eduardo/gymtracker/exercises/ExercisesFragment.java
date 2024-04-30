@@ -42,13 +42,13 @@ public class ExercisesFragment extends Fragment {
             if (language.equals("es")) { // Si el idioma es español
                 exercisesText = getString(R.string.exercises) + " de " + Utils.getTranslatedMuscleGroup(muscleGroup,getActivity());
             } else { // Si el idioma es inglés
-                exercisesText = muscleGroup + " " + getString(R.string.exercises);
+                exercisesText = Utils.getTranslatedMuscleGroup(muscleGroup,getActivity()) + " " + getString(R.string.exercises);
             }
 
             exercisesTextView.setText(exercisesText);
         }
 
-        db.collection(muscleGroup)
+        db.collection("muscleGroup").document(muscleGroup).collection("exercises")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -65,12 +65,13 @@ public class ExercisesFragment extends Fragment {
 
         exercisesGridView.setOnItemClickListener((parent, view1, position, id) -> {
             String exerciseName = exerciseNames.get(position);
-            db.collection(muscleGroup).document(documentId)
+            db.collection("muscleGroup").document(muscleGroup).collection("exercises").document(documentId)
                     .get()
                     .addOnSuccessListener(documentSnapshot -> {
                         String description = documentSnapshot.getString("description");
 
                         ExerciseDisplayFragment exerciseDisplayFragment = new ExerciseDisplayFragment();
+
                         Bundle bundle = new Bundle();
                         bundle.putString("name", exerciseName);
                         bundle.putString("description", description);

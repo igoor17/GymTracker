@@ -43,6 +43,7 @@ public class Utils {
     }
 
     public static String getTranslatedMuscleGroup(String muscleGroup, Context context) {
+
         switch (muscleGroup.toLowerCase()) {
             case "back":
                 return context.getString(R.string.muscle_group_back);

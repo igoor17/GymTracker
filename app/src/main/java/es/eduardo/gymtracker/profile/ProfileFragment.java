@@ -33,6 +33,7 @@ public class ProfileFragment extends Fragment {
     // UI
     private ImageButton editProfileButton;
     TextView profileName;
+    TextView profileEmail;
     TextView profileAge;
     TextView profileHeight;
     TextView profileWeight;
@@ -54,21 +55,24 @@ public class ProfileFragment extends Fragment {
         executor = Executors.newSingleThreadExecutor();
 
         profileName = view.findViewById(R.id.profile_name);
+        profileEmail = view.findViewById(R.id.profile_email);
         profileAge = view.findViewById(R.id.profile_age);
         profileHeight = view.findViewById(R.id.profile_height);
         profileWeight = view.findViewById(R.id.profile_weight);
         profileImc = view.findViewById(R.id.profile_imc);
         profileImage = view.findViewById(R.id.profile_image);
+        String userEmail=user.getEmail();
 
         // Obtén la información del usuario y establece los valores en los TextViews
         executor.execute(() -> {
-            db.collection("users").document(user.getEmail())
+            db.collection("users").document(userEmail)
                     .get()
                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                             getActivity().runOnUiThread(() -> {
                                 profileName.setText(documentSnapshot.getString("name"));
+                                profileEmail.setText(userEmail);
                                 profileAge.setText(documentSnapshot.getString("age"));
                                 profileHeight.setText(documentSnapshot.getString("height"));
                                 profileWeight.setText(documentSnapshot.getString("weight"));

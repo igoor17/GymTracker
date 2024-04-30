@@ -69,22 +69,22 @@ public class HomeFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 int id = v.getId();
                 if (id == R.id.chest) {
-                    bundle.putString("muscleGroup", "Chest");
+                    bundle.putString("muscleGroup", "chest");
                     fragment = new ExercisesFragment();
                 } else if (id == R.id.back) {
-                    bundle.putString("muscleGroup", "Back");
+                    bundle.putString("muscleGroup", "back");
                     fragment = new ExercisesFragment();
                 } else if (id == R.id.arms) {
-                    bundle.putString("muscleGroup", "Arms");
+                    bundle.putString("muscleGroup", "arms");
                     fragment = new ExercisesFragment();
                 } else if (id == R.id.legs) {
-                    bundle.putString("muscleGroup", "Legs");
+                    bundle.putString("muscleGroup", "legs");
                     fragment = new ExercisesFragment();
                 } else if (id == R.id.abs) {
-                    bundle.putString("muscleGroup", "Abs");
+                    bundle.putString("muscleGroup", "abs");
                     fragment = new ExercisesFragment();
                 } else if (id == R.id.shoulders) {
-                    bundle.putString("muscleGroup", "Shoulders");
+                    bundle.putString("muscleGroup", "shoulders");
                     fragment = new ExercisesFragment();
                 } else {
                     throw new IllegalStateException("Unexpected value: " + id);

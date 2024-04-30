@@ -100,4 +100,11 @@
     <string name="muscle_group_legs">Piernas</string>
     <string name="muscle_group_shoulders">Hombros</string>
     <string name="muscle_group_abs">Abdominales</string>
+    <string name="fill_all_fields">Por favor, rellena todos los campos</string>
+    <string name="pass_short">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="pass_dont_match">Las contraseñas no coinciden</string>
+    <string name="auth_failed">La autenticación falló</string>
+    <string name="username_exists">El nombre de usuario ya existe</string>
+    <string name="profile_updated">Perfil actualizado.</string>
+    <string name="error_update_profile">Error al actualizar el perfil.</string>
 </resources>

@@ -81,16 +81,27 @@ public class RegisterActivity extends AppCompatActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(RegisterActivity.this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(RegisterActivity.this, getString(R.string.fill_all_fields), Toast.LENGTH_SHORT).show();
                                 }
                             });
                             return;
                         }
+
+                        if(passwordText.length() < 6) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(RegisterActivity.this, getString(R.string.pass_short), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            return;
+                        }
+
                         if(!passwordText.equals(confirmPasswordText)) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(RegisterActivity.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(RegisterActivity.this, getString(R.string.pass_dont_match), Toast.LENGTH_SHORT).show();
                                 }
                             });
                             return;
@@ -116,7 +127,7 @@ public class RegisterActivity extends AppCompatActivity {
                                                                     runOnUiThread(new Runnable() {
                                                                         @Override
                                                                         public void run() {
-                                                                            Toast.makeText(RegisterActivity.this, "Authentication failed.",
+                                                                            Toast.makeText(RegisterActivity.this, getString(R.string.auth_failed),
                                                                                     Toast.LENGTH_SHORT).show();
                                                                         }
                                                                     });
@@ -124,11 +135,11 @@ public class RegisterActivity extends AppCompatActivity {
                                                             }
                                                         });
                                             } else {
-                                                // Username exists, show an error message
+                                                // Nombre de usuario existe
                                                 runOnUiThread(new Runnable() {
                                                     @Override
                                                     public void run() {
-                                                        Toast.makeText(RegisterActivity.this, "Username already exists.", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(RegisterActivity.this, getString(R.string.username_exists), Toast.LENGTH_SHORT).show();
                                                     }
                                                 });
                                             }

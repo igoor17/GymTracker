@@ -6,7 +6,7 @@
     <string name="welcome">"Welcome !"</string>
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
+    <string name="login_failed">"Log In failed"</string>
     <string name="title_activity_splash_screen" translatable="false">SplashScreenActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
@@ -18,7 +18,7 @@
     <string name="password">Password</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="register">Register</string>
-    <string name="login">Login</string>
+    <string name="login">Log In</string>
     <string name="forgot_password">Forgot your password?</string>
     <string name="not_registered">Not yet registered? SignUp Now </string>
     <string name="more_info">More Info</string>
@@ -100,4 +100,11 @@
     <string name="muscle_group_legs">Legs</string>
     <string name="muscle_group_shoulders">Shoulders</string>
     <string name="muscle_group_abs">Abs</string>
+    <string name="fill_all_fields">Please fill all the fields</string>
+    <string name="pass_short">Password must be at least 6 characters long</string>
+    <string name="pass_dont_match">Passwords do not match</string>
+    <string name="auth_failed">Authentication failed.</string>
+    <string name="username_exists">Username already exists.</string>
+    <string name="profile_updated">Profile updated.</string>
+    <string name="error_update_profile">Error updating profile.</string>
 </resources>

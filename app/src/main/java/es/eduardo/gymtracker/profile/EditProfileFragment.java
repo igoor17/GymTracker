@@ -93,6 +93,14 @@ public class EditProfileFragment extends Fragment {
                                 profileAgeEdit.setText(documentSnapshot.getString("age"));
                                 profileHeightEdit.setText(documentSnapshot.getString("height"));
                                 profileWeightEdit.setText(documentSnapshot.getString("weight"));
+
+                                // Cargar la imagen del usuario en el ImageView
+                                String imageUrl = documentSnapshot.getString("imageUrl");
+                                if (imageUrl != null) {
+                                    Glide.with(getActivity())
+                                            .load(imageUrl)
+                                            .into(profileImage);
+                                }
                             });
                         }
                     });
@@ -131,11 +139,12 @@ public class EditProfileFragment extends Fragment {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK
                 && data != null && data.getData() != null) {
             imageUri = data.getData();
+
+            // Actualizar el ImageView con la nueva imagen seleccionada
+            Glide.with(this)
+                    .load(imageUri)
+                    .into(profileImage);
         }
-        // Actualizar el ImageView con la nueva imagen seleccionada
-        Glide.with(this)
-                .load(imageUri)
-                .into(profileImage);
     }
 
     private void saveChanges() {
@@ -177,8 +186,14 @@ public class EditProfileFragment extends Fragment {
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
-                                                Toast.makeText(getActivity(), "Profile updated.", Toast.LENGTH_SHORT).show();
-
+                                                if (isAdded()) {
+                                                    getActivity().runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            Toast.makeText(getActivity(), getString(R.string.profile_updated), Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
+                                                }
                                                 // Volver al fragmento de perfil
                                                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                                                 transaction.replace(R.id.frame_layout, new ProfileFragment());
@@ -188,7 +203,14 @@ public class EditProfileFragment extends Fragment {
                                         .addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
-                                                Toast.makeText(getActivity(), "Error updating profile.", Toast.LENGTH_SHORT).show();
+                                                if (isAdded()) {
+                                                    getActivity().runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            Toast.makeText(getActivity(), getString(R.string.error_update_profile), Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
+                                                }
                                             }
                                         });
                             }
