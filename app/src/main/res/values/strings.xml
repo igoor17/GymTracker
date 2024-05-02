@@ -110,6 +110,8 @@
     <string name="all">All</string>
     <string name="selected_exercises">Selected Exercises</string>
     <string name="available_exercises">Available Exercises</string>
+    <string name="days">Days</string>
+    <string name="exerciseimage">ExerciseImage</string>
     <string-array name="days_of_week">
         <item>Monday</item>
         <item>Tuesday</item>

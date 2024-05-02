@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.MediaController;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -39,6 +40,7 @@ public class ExerciseDisplayFragment extends Fragment {
     TextView exerciseGroupTextView;
     VideoView exerciseVideoView;
     ScrollView scrollView;
+    ImageButton backButton;
 
     private String exerciseName;
     private String exerciseDescription;
@@ -70,6 +72,7 @@ public class ExerciseDisplayFragment extends Fragment {
         exerciseGroupTextView = view.findViewById(R.id.exerciseGroup);
         exerciseVideoView = view.findViewById(R.id.videoView);
         scrollView = view.findViewById(R.id.scrollView);
+        backButton = view.findViewById(R.id.backButton);
 
         String translatedMuscleGroup = Utils.getTranslatedMuscleGroup(exerciseGroup,getActivity());
         exerciseNameTextView.setText(exerciseName);
@@ -93,6 +96,13 @@ public class ExerciseDisplayFragment extends Fragment {
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) scrollView.getLayoutParams();
         layoutParams.setMargins(layoutParams.leftMargin, layoutParams.topMargin, layoutParams.rightMargin, finalMargin);
         scrollView.setLayoutParams(layoutParams);
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requireActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
     }
 
     private void getExerciseVideo() {

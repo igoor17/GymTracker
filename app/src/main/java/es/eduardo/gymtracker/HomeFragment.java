@@ -118,29 +118,24 @@ public class HomeFragment extends Fragment {
                             List<Routine> routines = new ArrayList<>();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 String name = document.getId(); // Obtener el nombre de la rutina
-                                String imageUrl = document.getString("imageUrl"); // Asegúrate de tener este campo en Firestore
-                                db.collection("users").document(userEmail).collection("routines").document(name).collection("exercises")
-                                        .get()
-                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                if (task.isSuccessful()) {
-                                                    int days = task.getResult().size();
-                                                    routines.add(new Routine(name, imageUrl, days, new ArrayList<>()));
-                                                    if (routines.isEmpty()) {
-                                                        viewPager.setVisibility(View.GONE);
-                                                        noRoutinesTextView.setVisibility(View.VISIBLE);
-                                                    } else {
-                                                        viewPager.setVisibility(View.VISIBLE);
-                                                        noRoutinesTextView.setVisibility(View.GONE);
-                                                        RoutineAdapter routineAdapter = new RoutineAdapter(HomeFragment.this, routines);
-                                                        viewPager.setAdapter(routineAdapter);
-                                                    }
-                                                } else {
-                                                    Log.w("HomeFragment", "Error getting documents.", task.getException());
-                                                }
-                                            }
-                                        });
+                                String imageUrl = document.getString("imageUrl"); // Obtener la URL de la imagenº
+                                Long daysLong = document.getLong("days"); // Obtener el número de días
+                                Long totalExercisesLong = document.getLong("exercises"); // Obtener el número total de ejercicios
+
+                                int days = daysLong != null ? daysLong.intValue() : 0;
+                                int totalExercises = totalExercisesLong != null ? totalExercisesLong.intValue() : 0;
+
+                                routines.add(new Routine(name, imageUrl, days, totalExercises, new ArrayList<>()));
+
+                                if (routines.isEmpty()) {
+                                    viewPager.setVisibility(View.GONE);
+                                    noRoutinesTextView.setVisibility(View.VISIBLE);
+                                } else {
+                                    viewPager.setVisibility(View.VISIBLE);
+                                    noRoutinesTextView.setVisibility(View.GONE);
+                                    RoutineAdapter routineAdapter = new RoutineAdapter(HomeFragment.this, routines);
+                                    viewPager.setAdapter(routineAdapter);
+                                }
                             }
                         } else {
                             Log.w("HomeFragment", "Error getting documents.", task.getException());

@@ -20,6 +20,7 @@ public class RoutineFragment extends Fragment {
     private ImageView routineImage;
     private TextView routineName;
     private TextView routineDays;
+    private TextView routineExercises;
 
     public RoutineFragment(Routine routine) {
         this.routine = routine;
@@ -33,13 +34,15 @@ public class RoutineFragment extends Fragment {
         routineImage = view.findViewById(R.id.routine_image);
         routineName = view.findViewById(R.id.routine_name);
         routineDays = view.findViewById(R.id.routine_days);
+        routineExercises = view.findViewById(R.id.routine_exercises);
 
         Glide.with(this)
                 .load(routine.getImageUrl())
                 .into(routineImage);
 
         routineName.setText(routine.getName());
-        routineDays.setText(String.valueOf(routine.getDays()));
+        routineDays.setText(String.valueOf(routine.getDays()+" "+getString(R.string.days)));
+        routineExercises.setText(String.valueOf(routine.getTotalExercises()+" "+getString(R.string.exercises)));
 
         return view;
     }

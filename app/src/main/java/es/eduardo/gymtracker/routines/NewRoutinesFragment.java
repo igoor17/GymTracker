@@ -85,6 +85,8 @@ public class NewRoutinesFragment extends Fragment {
     public void onSaveButtonClicked() {
         String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
         String routineName = routineNameEditText.getText().toString();
+
+        // Obtener el array con los nombres de los días de la semana en inglés de los recursos
         String[] daysOfWeek = getResources().getStringArray(R.array.days_of_week);
 
         // Obtener una referencia a la carpeta "rutinas" en el almacenamiento de Firebase
@@ -104,35 +106,47 @@ public class NewRoutinesFragment extends Fragment {
                             .addOnSuccessListener(uri -> {
                                 String photoDownloadUrl = uri.toString();
 
-                                // Guardar los detalles de la rutina y la URL de descarga de la foto en Firestore
+                                // Contar el número total de ejercicios
+                                int daysWithExercises = 0;
+                                int totalExercises = 0;
+                                for (List<Exercise> exercises : selectedExercisesPerDay.values()) {
+                                    if (!exercises.isEmpty()) {
+                                        daysWithExercises++;
+                                        totalExercises += exercises.size();
+                                    }
+                                }
+
+                                // Crear un mapa para guardar los detalles de la rutina
+                                Map<String, Object> routineDetails = new HashMap<>();
+                                routineDetails.put("imageUrl", photoDownloadUrl);
+                                routineDetails.put("days", daysWithExercises); // Número de días
+                                routineDetails.put("exercises", totalExercises); // Número total de ejercicios
+
+                                // Guardar los detalles de la rutina en Firestore
+                                db.collection("users").document(userEmail)
+                                        .collection("routines").document(routineName)
+                                        .set(routineDetails, SetOptions.merge());
+
+                                // Guardar los detalles de los ejercicios en Firestore
                                 for (Map.Entry<Integer, List<Exercise>> entry : selectedExercisesPerDay.entrySet()) {
                                     int day = entry.getKey();
                                     List<Exercise> selectedExercises = entry.getValue();
 
-                                    for (int i = 0; i < selectedExercises.size(); i++) {
-                                        Exercise exercise = selectedExercises.get(i);
+                                    String dayName = daysOfWeek[day - 1];
 
+                                    for (Exercise exercise : selectedExercises) {
                                         // Crear un mapa para guardar los detalles del ejercicio
                                         Map<String, Object> exerciseDetails = new HashMap<>();
                                         exerciseDetails.put("name", exercise.getName());
                                         exerciseDetails.put("weight", 0); // Puedes actualizar estos valores más tarde
                                         exerciseDetails.put("reps", 0); // Puedes actualizar estos valores más tarde
 
-                                        // Guardar los detalles del ejercicio y la URL de descarga de la foto en Firestore
+                                        // Guardar los detalles del ejercicio en Firestore
                                         db.collection("users").document(userEmail)
                                                 .collection("routines").document(routineName)
-                                                .collection("exercises").document(daysOfWeek[day - 1])
+                                                .collection("exercises").document(dayName)
                                                 .collection(exercise.getName())
-                                                .add(exerciseDetails)
-                                                .addOnSuccessListener(aVoid -> Log.d("Firestore", "DocumentSnapshot successfully written!"))
-                                                .addOnFailureListener(e -> Log.w("Firestore", "Error writing document", e));
-
-                                        Map<String, Object> routineDetails = new HashMap<>();
-                                        routineDetails.put("imageUrl", photoDownloadUrl);
-
-                                        db.collection("users").document(userEmail)
-                                                .collection("routines").document(routineName)
-                                                .set(routineDetails, SetOptions.merge());
+                                                .add(exerciseDetails);
                                     }
                                 }
                             })

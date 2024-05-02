@@ -25,15 +25,24 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class DayFragment extends Fragment {
+
+    // Firebase
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    // Arguments
     public static final String ARG_DAY = "day";
+
+    // Data
     private int day;
     private List<Exercise> selectedExercises;
     private String muscleGroup;
+
+    // UI
     private RecyclerView exercisesRecyclerView;
     private RecyclerView selectedExercisesRecyclerView;
     private ChipGroup muscleGroupChipGroup;
 
+    // Adapters
     private ExerciseAdapter exercisesAdapter;
     private ExerciseAdapter selectedExercisesAdapter;
 
@@ -102,9 +111,11 @@ public class DayFragment extends Fragment {
 
     public void onExerciseSelected(Exercise exercise) {
         ((NewRoutinesFragment) getParentFragment()).onExerciseSelected(day, exercise);
+        selectedExercisesAdapter.notifyDataSetChanged();
     }
 
     public void onExerciseDeselected(Exercise exercise) {
         ((NewRoutinesFragment) getParentFragment()).onExerciseDeselected(day, exercise);
+        selectedExercisesAdapter.notifyDataSetChanged();
     }
 }
