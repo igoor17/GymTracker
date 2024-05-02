@@ -62,7 +62,7 @@
     <string name="arms">Arms</string>
     <string name="legs">Legs</string>
     <string name="shoulders">Shoulders</string>
-    <string name="abs">ABS</string>
+    <string name="abs">Abs</string>
     <string name="exercises">Exercises</string>
     <string name="description">Description:</string>
     <string name="group">Group:</string>
@@ -107,4 +107,16 @@
     <string name="username_exists">Username already exists.</string>
     <string name="profile_updated">Profile updated.</string>
     <string name="error_update_profile">Error updating profile.</string>
+    <string name="all">All</string>
+    <string name="selected_exercises">Selected Exercises</string>
+    <string name="available_exercises">Available Exercises</string>
+    <string-array name="days_of_week">
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
+    </string-array>
 </resources>

@@ -8,37 +8,30 @@ import es.eduardo.gymtracker.exercises.Exercise;
 
 public class Routine {
     private String name;
-    private List<Exercise> exercises;
+    private String imageUrl;
     private int days;
-    private Map<String, Map<String, Integer>> exerciseLogs; // Map<ExerciseName, Map<Day, Weight>>
+    private List<Exercise> exercises;
 
-    public Routine(String name, List<Exercise> exercises, int days) {
+    public Routine(String name, String imageUrl, int days, List<Exercise> exercises) {
         this.name = name;
-        this.exercises = exercises;
+        this.imageUrl = imageUrl;
         this.days = days;
-        this.exerciseLogs = new HashMap<>();
+        this.exercises = exercises;
     }
 
     public String getName() {
         return name;
     }
 
-    public List<Exercise> getExercises() {
-        return exercises;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
     public int getDays() {
         return days;
     }
 
-    public Map<String, Map<String, Integer>> getExerciseLogs() {
-        return exerciseLogs;
-    }
-
-    public void logExercise(String exerciseName, String day, int weight) {
-        if (!exerciseLogs.containsKey(exerciseName)) {
-            exerciseLogs.put(exerciseName, new HashMap<>());
-        }
-        exerciseLogs.get(exerciseName).put(day, weight);
+    public List<Exercise> getExercises() {
+        return exercises;
     }
 }

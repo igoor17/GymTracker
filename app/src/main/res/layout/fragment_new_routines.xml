@@ -1,14 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".routines.NewRoutinesFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-</FrameLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Routine"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Routine Name"
+                android:textSize="18sp"
+                android:textColor="@color/white"/>
+
+            <EditText
+                android:id="@+id/routine_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Enter Routine Name"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:inputType="text"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:padding="8dp"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Days"
+            android:textSize="18sp"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/white"/>
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/days_chip_group"
+            android:layout_width="399dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_one"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="1"
+                android:textIsSelectable="true" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_two"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="2" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_three"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="3" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_four"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="4" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_five"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="5" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_six"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="6" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_seven"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="7" />
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <FrameLayout
+            android:id="@+id/day_fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="500dp" />
+
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save Routine"
+            android:layout_marginTop="16dp" />
+
+    </LinearLayout>
+
+</ScrollView>

@@ -7,25 +7,40 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import es.eduardo.gymtracker.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link RoutineFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class RoutineFragment extends Fragment {
     private Routine routine;
+
+    private ImageView routineImage;
+    private TextView routineName;
+    private TextView routineDays;
 
     public RoutineFragment(Routine routine) {
         this.routine = routine;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_routine, container, false);
-        // Aquí puedes inicializar tus vistas y mostrar los detalles de la rutina
+
+        routineImage = view.findViewById(R.id.routine_image);
+        routineName = view.findViewById(R.id.routine_name);
+        routineDays = view.findViewById(R.id.routine_days);
+
+        Glide.with(this)
+                .load(routine.getImageUrl())
+                .into(routineImage);
+
+        routineName.setText(routine.getName());
+        routineDays.setText(String.valueOf(routine.getDays()));
+
         return view;
     }
 }

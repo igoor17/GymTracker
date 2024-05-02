@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -24,12 +25,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import es.eduardo.gymtracker.exercises.Exercise;
 import es.eduardo.gymtracker.exercises.ExercisesFragment;
 import es.eduardo.gymtracker.routines.Routine;
-import es.eduardo.gymtracker.routines.RoutinePagerAdapter;
+import es.eduardo.gymtracker.routines.RoutineAdapter;
 
 
 public class HomeFragment extends Fragment {
@@ -108,7 +107,9 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadRoutines() {
-        db.collection("routines")
+        String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+
+        db.collection("users").document(userEmail).collection("routines")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -116,25 +117,30 @@ public class HomeFragment extends Fragment {
                         if (task.isSuccessful()) {
                             List<Routine> routines = new ArrayList<>();
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                String name = document.getString("name");
-                                List<Map<String, Object>> exercisesData = (List<Map<String, Object>>) document.get("exercises");
-                                List<Exercise> exercises = new ArrayList<>();
-                                for (Map<String, Object> exerciseData : exercisesData) {
-                                    String exerciseName = (String) exerciseData.get("name");
-                                    String exerciseDescription = (String) exerciseData.get("description");
-                                    exercises.add(new Exercise(exerciseName, exerciseDescription));
-                                }
-                                int days = document.getLong("days").intValue();
-                                routines.add(new Routine(name, exercises, days));
-                            }
-                            if (routines.isEmpty()) {
-                                viewPager.setVisibility(View.GONE);
-                                noRoutinesTextView.setVisibility(View.VISIBLE);
-                            } else {
-                                viewPager.setVisibility(View.VISIBLE);
-                                noRoutinesTextView.setVisibility(View.GONE);
-                                RoutinePagerAdapter routinePagerAdapter = new RoutinePagerAdapter(HomeFragment.this, routines);
-                                viewPager.setAdapter(routinePagerAdapter);
+                                String name = document.getId(); // Obtener el nombre de la rutina
+                                String imageUrl = document.getString("imageUrl"); // Asegúrate de tener este campo en Firestore
+                                db.collection("users").document(userEmail).collection("routines").document(name).collection("exercises")
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    int days = task.getResult().size();
+                                                    routines.add(new Routine(name, imageUrl, days, new ArrayList<>()));
+                                                    if (routines.isEmpty()) {
+                                                        viewPager.setVisibility(View.GONE);
+                                                        noRoutinesTextView.setVisibility(View.VISIBLE);
+                                                    } else {
+                                                        viewPager.setVisibility(View.VISIBLE);
+                                                        noRoutinesTextView.setVisibility(View.GONE);
+                                                        RoutineAdapter routineAdapter = new RoutineAdapter(HomeFragment.this, routines);
+                                                        viewPager.setAdapter(routineAdapter);
+                                                    }
+                                                } else {
+                                                    Log.w("HomeFragment", "Error getting documents.", task.getException());
+                                                }
+                                            }
+                                        });
                             }
                         } else {
                             Log.w("HomeFragment", "Error getting documents.", task.getException());

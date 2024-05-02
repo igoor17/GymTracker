@@ -15,6 +15,7 @@ import android.widget.Toast;
 import es.eduardo.gymtracker.databinding.ActivityMainBinding;
 import es.eduardo.gymtracker.map.GymsFragment;
 import es.eduardo.gymtracker.profile.ProfileFragment;
+import es.eduardo.gymtracker.routines.NewRoutinesFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -54,6 +55,10 @@ public class MainActivity extends AppCompatActivity {
 
             return false;
 
+        });
+
+        binding.addRoutines.setOnClickListener(v -> {
+            replaceFragment(new NewRoutinesFragment());
         });
     }
 

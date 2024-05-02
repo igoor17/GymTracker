@@ -7,10 +7,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.List;
 
-public class RoutinePagerAdapter extends FragmentStateAdapter {
+public class RoutineAdapter extends FragmentStateAdapter {
     private List<Routine> routines;
 
-    public RoutinePagerAdapter(@NonNull Fragment fragment, List<Routine> routines) {
+    public RoutineAdapter(@NonNull Fragment fragment, List<Routine> routines) {
         super(fragment);
         this.routines = routines;
     }

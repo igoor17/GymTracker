@@ -107,4 +107,16 @@
     <string name="username_exists">El nombre de usuario ya existe</string>
     <string name="profile_updated">Perfil actualizado.</string>
     <string name="error_update_profile">Error al actualizar el perfil.</string>
+    <string name="all">Todos</string>
+    <string name="selected_exercises">Ejercicios Seleccionados</string>
+    <string name="available_exercises">Ejercicios Disponibles</string>
+    <string-array name="days_of_week">
+        <item>Lunes</item>
+        <item>Martes</item>
+        <item>Miércoles</item>
+        <item>Jueves</item>
+        <item>Viernes</item>
+        <item>Sábado</item>
+        <item>Domingo</item>
+    </string-array>
 </resources>
