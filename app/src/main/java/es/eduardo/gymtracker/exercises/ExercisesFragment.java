@@ -21,7 +21,11 @@ import es.eduardo.gymtracker.R;
 import es.eduardo.gymtracker.utils.Utils;
 
 public class ExercisesFragment extends Fragment {
+
+    // Firebase
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    // Info Ejercicios
     private List<String> exerciseNames = new ArrayList<>();
     private String muscleGroup;
     private String documentId;

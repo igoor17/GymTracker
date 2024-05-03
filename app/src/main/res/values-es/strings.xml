@@ -111,6 +111,11 @@
     <string name="selected_exercises">Ejercicios Seleccionados</string>
     <string name="available_exercises">Ejercicios Disponibles</string>
     <string name="days">Días</string>
+    <string name="exerciseimage">ExerciseImage</string>
+    <string name="select_language">Selecciona Idioma</string>
+    <string name="english">Inglés</string>
+    <string name="spanish">Español</string>
+    <string name="logout">Cerrar Sesión</string>
     <string-array name="days_of_week">
         <item>Lunes</item>
         <item>Martes</item>

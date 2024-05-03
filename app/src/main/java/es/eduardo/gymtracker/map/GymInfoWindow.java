@@ -24,9 +24,12 @@ import es.eduardo.gymtracker.R;
 
 public class GymInfoWindow extends BasicInfoWindow {
 
-    private Gimnasio gimnasio;
+    // Firebase
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+
+    // Gimnasio
+    private Gimnasio gimnasio;
 
     public GymInfoWindow(int layoutResId, MapView mapView, Gimnasio gimnasio, FirebaseAuth mAuth, FirebaseFirestore db) {
         super(layoutResId, mapView);

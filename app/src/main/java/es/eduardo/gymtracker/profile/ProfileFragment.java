@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Locale;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -32,6 +33,9 @@ public class ProfileFragment extends Fragment {
 
     // UI
     private ImageButton editProfileButton;
+    private ImageButton settingsButton;
+
+    // Info Usuario
     TextView profileName;
     TextView profileEmail;
     TextView profileAge;
@@ -39,9 +43,6 @@ public class ProfileFragment extends Fragment {
     TextView profileWeight;
     TextView profileImc;
     ImageView profileImage;
-
-    // Executor
-    private Executor executor;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,9 +52,8 @@ public class ProfileFragment extends Fragment {
         user = FirebaseAuth.getInstance().getCurrentUser();
         db = FirebaseFirestore.getInstance();
 
-        // Initialize the executor
-        executor = Executors.newSingleThreadExecutor();
-
+        editProfileButton = view.findViewById(R.id.edit_profile_button);
+        settingsButton = view.findViewById(R.id.settings_button);
         profileName = view.findViewById(R.id.profile_name);
         profileEmail = view.findViewById(R.id.profile_email);
         profileAge = view.findViewById(R.id.profile_age);
@@ -64,19 +64,19 @@ public class ProfileFragment extends Fragment {
         String userEmail=user.getEmail();
 
         // Obtén la información del usuario y establece los valores en los TextViews
-        executor.execute(() -> {
-            db.collection("users").document(userEmail)
-                    .get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+        db.collection("users").document(userEmail)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (isAdded()) {
                             getActivity().runOnUiThread(() -> {
                                 profileName.setText(documentSnapshot.getString("name"));
                                 profileEmail.setText(userEmail);
                                 profileAge.setText(documentSnapshot.getString("age"));
                                 profileHeight.setText(documentSnapshot.getString("height"));
                                 profileWeight.setText(documentSnapshot.getString("weight"));
-                                profileImc.setText(String.valueOf(documentSnapshot.getDouble("bmi")));
+                                profileImc.setText(String.format(Locale.getDefault(),"%.2f",documentSnapshot.getDouble("bmi")));
 
                                 // Cargar la imagen del usuario en el ImageView
                                 String imageUrl = documentSnapshot.getString("imageUrl");
@@ -87,16 +87,25 @@ public class ProfileFragment extends Fragment {
                                 }
                             });
                         }
-                    });
-        });
+                    }
+                });
 
-        editProfileButton = view.findViewById(R.id.edit_profile_button);
         editProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Cambiar al fragmento EditProfileFragment
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.frame_layout, new EditProfileFragment());
+                transaction.commit();
+            }
+        });
+
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Cambiar al fragmento SettingsFragment
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.frame_layout, new SettingsFragment());
                 transaction.commit();
             }
         });

@@ -40,11 +40,16 @@ import java.util.concurrent.Executors;
 
 public class GymsFragment extends Fragment {
 
+    // Firebase
     FirebaseFirestore db;
     FirebaseAuth mAuth;
+
+    // Mapa
     private MapView mapView;
     private MyLocationNewOverlay locationOverlay;
     private OverpassAPI overpassAPI;
+
+    // Executor
     private Executor executor;
 
     @Override

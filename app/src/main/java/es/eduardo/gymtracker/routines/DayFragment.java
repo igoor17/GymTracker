@@ -29,18 +29,18 @@ public class DayFragment extends Fragment {
     // Firebase
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    // Arguments
-    public static final String ARG_DAY = "day";
+    // Argumentos
+    public static final String ARG_DAY = "day"; // Clave utilizada para pasar el día como argumento entre fragmentos
 
-    // Data
-    private int day;
-    private List<Exercise> selectedExercises;
-    private String muscleGroup;
+    // Variables
+    private int day; // Día de la semana para el que se está creando la rutina
+    private List<Exercise> selectedExercises; // Lista de ejercicios seleccionados para el día especificado
+    private String muscleGroup; // Grupo muscular seleccionado para filtrar los ejercicios
 
     // UI
-    private RecyclerView exercisesRecyclerView;
-    private RecyclerView selectedExercisesRecyclerView;
-    private ChipGroup muscleGroupChipGroup;
+    private RecyclerView exercisesRecyclerView; // Lista de ejercicios disponibles
+    private RecyclerView selectedExercisesRecyclerView; // Lista de ejercicios seleccionados
+    private ChipGroup muscleGroupChipGroup; // Botones de grupos musculares
 
     // Adapters
     private ExerciseAdapter exercisesAdapter;
@@ -60,7 +60,9 @@ public class DayFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_day, container, false);
         TextView textView = view.findViewById(R.id.day_text_view);
         exercisesRecyclerView = view.findViewById(R.id.exercises_recycler_view);
+        exercisesRecyclerView.setNestedScrollingEnabled(false);
         selectedExercisesRecyclerView = view.findViewById(R.id.selected_exercises_recycler_view);
+        selectedExercisesRecyclerView.setNestedScrollingEnabled(false);
         muscleGroupChipGroup = view.findViewById(R.id.muscle_group_chip_group);
 
 
@@ -72,6 +74,7 @@ public class DayFragment extends Fragment {
 
         exercisesAdapter = new ExerciseAdapter(new ArrayList<>(), this::onExerciseSelected);
         selectedExercisesAdapter = new ExerciseAdapter(selectedExercises, this::onExerciseDeselected);
+
 
         exercisesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         exercisesRecyclerView.setAdapter(exercisesAdapter);
@@ -100,7 +103,8 @@ public class DayFragment extends Fragment {
                             String name = document.getString("name");
                             String description = document.getString("description");
                             String imageUrl = document.getString("imageUrl");
-                            exercises.add(new Exercise(name, description, imageUrl));
+                            String muscleGroup = document.getString("muscleGroup");
+                            exercises.add(new Exercise(name, description, imageUrl, muscleGroup));
                         }
                         exercisesAdapter.updateExercises(exercises);
                     } else {

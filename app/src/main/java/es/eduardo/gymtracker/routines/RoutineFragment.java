@@ -15,8 +15,11 @@ import com.bumptech.glide.Glide;
 import es.eduardo.gymtracker.R;
 
 public class RoutineFragment extends Fragment {
+
+    // Variables
     private Routine routine;
 
+    // Info Rutina
     private ImageView routineImage;
     private TextView routineName;
     private TextView routineDays;

@@ -1,11 +1,15 @@
 package es.eduardo.gymtracker.exercises;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -16,8 +20,10 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import es.eduardo.gymtracker.R;
+import es.eduardo.gymtracker.exercises.ExerciseDisplayFragment;
 
 public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ExerciseViewHolder> {
+
     private List<Exercise> exercises;
     private Consumer<Exercise> onExerciseClicked;
 
@@ -65,6 +71,32 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
                     .load(exercise.getImageUrl())
                     .into(backgroundImageView);
             itemView.setOnClickListener(v -> onExerciseClicked.accept(exercise));
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    // Crear un nuevo fragmento de visualización de ejercicio
+                    ExerciseDisplayFragment exerciseDisplayFragment = new ExerciseDisplayFragment();
+
+                    // Crear un nuevo Bundle para pasar los datos del ejercicio al fragmento
+                    Bundle bundle = new Bundle();
+                    bundle.putString("name", exercise.getName());
+                    bundle.putString("description", exercise.getDescription());
+                    bundle.putString("muscleGroup", exercise.getMuscleGroup());
+
+                    // Pasar el Bundle al fragmento
+                    exerciseDisplayFragment.setArguments(bundle);
+
+                    // Abrir el fragmento
+                    FragmentManager fragmentManager = ((FragmentActivity) v.getContext()).getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.frame_layout, exerciseDisplayFragment);
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+
+                    return true;
+                }
+            });
         }
     }
 }

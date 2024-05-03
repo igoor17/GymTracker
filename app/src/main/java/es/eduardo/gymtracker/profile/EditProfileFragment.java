@@ -54,14 +54,13 @@ public class EditProfileFragment extends Fragment {
 
     // UI
     Button saveButton;
+
+    // Info Usuario
     EditText profileNameEdit;
     EditText profileAgeEdit;
     EditText profileHeightEdit;
     EditText profileWeightEdit;
     ImageView profileImage;
-
-    // Executor
-    private Executor executor;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,9 +71,6 @@ public class EditProfileFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         storageRef = FirebaseStorage.getInstance().getReference();
 
-        // Initialize the executor
-        executor = Executors.newSingleThreadExecutor();
-
         profileNameEdit = view.findViewById(R.id.profile_name_edit);
         profileAgeEdit = view.findViewById(R.id.profile_age_edit);
         profileHeightEdit = view.findViewById(R.id.profile_height_edit);
@@ -82,29 +78,29 @@ public class EditProfileFragment extends Fragment {
         profileImage = view.findViewById(R.id.profile_image);
 
         // Obtén la información del usuario y establece los valores en los EditText
-        executor.execute(() -> {
-            db.collection("users").document(user.getEmail())
-                    .get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            getActivity().runOnUiThread(() -> {
-                                profileNameEdit.setText(documentSnapshot.getString("name"));
-                                profileAgeEdit.setText(documentSnapshot.getString("age"));
-                                profileHeightEdit.setText(documentSnapshot.getString("height"));
-                                profileWeightEdit.setText(documentSnapshot.getString("weight"));
 
-                                // Cargar la imagen del usuario en el ImageView
-                                String imageUrl = documentSnapshot.getString("imageUrl");
-                                if (imageUrl != null) {
-                                    Glide.with(getActivity())
-                                            .load(imageUrl)
-                                            .into(profileImage);
-                                }
-                            });
-                        }
-                    });
-        });
+        db.collection("users").document(user.getEmail())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        getActivity().runOnUiThread(() -> {
+                            profileNameEdit.setText(documentSnapshot.getString("name"));
+                            profileAgeEdit.setText(documentSnapshot.getString("age"));
+                            profileHeightEdit.setText(documentSnapshot.getString("height"));
+                            profileWeightEdit.setText(documentSnapshot.getString("weight"));
+
+                            // Cargar la imagen del usuario en el ImageView
+                            String imageUrl = documentSnapshot.getString("imageUrl");
+                            if (imageUrl != null) {
+                                Glide.with(getActivity())
+                                        .load(imageUrl)
+                                        .into(profileImage);
+                            }
+                        });
+                    }
+                });
+
 
         ImageButton editImageButton = view.findViewById(R.id.edit_image_button);
         editImageButton.setOnClickListener(new View.OnClickListener() {

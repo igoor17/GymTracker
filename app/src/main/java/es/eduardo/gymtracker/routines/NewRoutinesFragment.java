@@ -30,9 +30,13 @@ import es.eduardo.gymtracker.exercises.Exercise;
 
 public class NewRoutinesFragment extends Fragment {
 
+    // Firebase
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    // Variables
     private HashMap<Integer, List<Exercise>> selectedExercisesPerDay = new HashMap<>();
+
+    // UI
     private ChipGroup daysChipGroup;
     private Button saveButton;
     private EditText routineNameEditText;

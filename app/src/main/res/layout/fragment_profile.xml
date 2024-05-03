@@ -8,16 +8,43 @@
     android:padding="16dp"
     >
 
-    <ImageButton
-        android:id="@+id/edit_profile_button"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginTop="16dp"
-        android:background="@android:color/transparent"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_edit_light"
-        android:contentDescription="edit" />
+        android:gravity="end"
+        android:orientation="horizontal">
+        <ImageButton
+            android:id="@+id/edit_profile_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_edit_light"
+            android:contentDescription="edit" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="4"/>
+
+        <ImageButton
+            android:id="@+id/settings_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_settings"
+            android:contentDescription="edit" />
+    </LinearLayout>
+
 
     <ImageView
         android:id="@+id/profile_image"
@@ -31,17 +58,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/label_profile_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:gravity="end"
+            android:layout_gravity="center"
             android:text="@string/profile_name"
             android:textSize="18sp"
-            android:layout_marginTop="8dp"
             android:textStyle="bold"
             android:textColor="@color/white"/>
 
@@ -49,9 +74,8 @@
             android:id="@+id/profile_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_gravity="center"
             android:textSize="18sp"
-            android:layout_marginTop="8dp"
             android:textStyle="bold"
             android:textColor="@color/white"/>
     </LinearLayout>
@@ -59,14 +83,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/label_profile_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:gravity="end"
+            android:gravity="center"
+            android:layout_gravity="center"
             android:text="@string/profile_email"
             android:textSize="18sp"
             android:layout_marginTop="8dp"
@@ -78,6 +103,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_gravity="center"
             android:textSize="18sp"
             android:layout_marginTop="8dp"
             android:textStyle="bold"
@@ -87,17 +113,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/label_profile_age"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:gravity="end"
+            android:layout_gravity="center"
             android:text="@string/profile_age"
             android:textSize="18sp"
-            android:layout_marginTop="8dp"
             android:textStyle="bold"
             android:textColor="@color/white"/>
 
@@ -105,28 +129,24 @@
             android:id="@+id/profile_age"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_gravity="center"
             android:textSize="18sp"
-            android:layout_marginTop="8dp"
             android:textStyle="bold"
             android:textColor="@color/white"/>
-
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/label_profile_height"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:gravity="end"
+            android:layout_gravity="center"
             android:text="@string/profile_height"
             android:textSize="18sp"
-            android:layout_marginTop="8dp"
             android:textStyle="bold"
             android:textColor="@color/white"/>
 
@@ -134,28 +154,24 @@
             android:id="@+id/profile_height"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_gravity="center"
             android:textSize="18sp"
-            android:layout_marginTop="8dp"
             android:textStyle="bold"
             android:textColor="@color/white"/>
-
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/label_profile_weight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:gravity="end"
+            android:layout_gravity="center"
             android:text="@string/profile_weight"
             android:textSize="18sp"
-            android:layout_marginTop="8dp"
             android:textStyle="bold"
             android:textColor="@color/white"/>
 
@@ -163,9 +179,8 @@
             android:id="@+id/profile_weight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_gravity="center"
             android:textSize="18sp"
-            android:layout_marginTop="8dp"
             android:textStyle="bold"
             android:textColor="@color/white"/>
     </LinearLayout>
@@ -173,17 +188,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/label_profile_imc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:gravity="end"
+            android:layout_gravity="center"
             android:text="@string/profile_your_bmi"
             android:textSize="18sp"
-            android:layout_marginTop="8dp"
             android:textStyle="bold"
             android:textColor="@color/white"/>
 
@@ -191,9 +204,8 @@
             android:id="@+id/profile_imc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_gravity="center"
             android:textSize="18sp"
-            android:layout_marginTop="8dp"
             android:textStyle="bold"
             android:textColor="@color/white"/>
     </LinearLayout>

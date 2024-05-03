@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,7 +25,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import es.eduardo.gymtracker.exercises.ExercisesFragment;
 import es.eduardo.gymtracker.routines.Routine;
@@ -133,8 +136,10 @@ public class HomeFragment extends Fragment {
                                 } else {
                                     viewPager.setVisibility(View.VISIBLE);
                                     noRoutinesTextView.setVisibility(View.GONE);
-                                    RoutineAdapter routineAdapter = new RoutineAdapter(HomeFragment.this, routines);
-                                    viewPager.setAdapter(routineAdapter);
+                                    if (isAdded()) {
+                                        RoutineAdapter routineAdapter = new RoutineAdapter(HomeFragment.this, routines);
+                                        viewPager.setAdapter(routineAdapter);
+                                    }
                                 }
                             }
                         } else {

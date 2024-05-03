@@ -33,15 +33,20 @@ import es.eduardo.gymtracker.utils.Utils;
 
 public class ExerciseDisplayFragment extends Fragment {
 
+    // Firebase
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    // Info Ejercicio UI
     TextView exerciseNameTextView;
     TextView exerciseDescriptionTextView;
     TextView exerciseGroupTextView;
     VideoView exerciseVideoView;
+
+    // UI
     ScrollView scrollView;
     ImageButton backButton;
 
+    // Info Ejercicio
     private String exerciseName;
     private String exerciseDescription;
     private String exerciseGroup;
