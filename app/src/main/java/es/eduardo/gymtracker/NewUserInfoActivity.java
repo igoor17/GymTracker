@@ -97,7 +97,7 @@ public class NewUserInfoActivity extends AppCompatActivity {
             // Create a new user object with the user's information
             Map<String, Object> user = new HashMap<>();
             user.put("age", userAge);
-            user.put("weight", userWeight);
+            user.put("weight", userWeightValue);
             user.put("height", userHeight);
             user.put("gender", genderValue);
 

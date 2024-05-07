@@ -210,6 +210,13 @@
             android:textColor="@color/white"/>
     </LinearLayout>
 
+    <Button
+        android:id="@+id/progressButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/your_progress"
+        android:layout_marginTop="16dp" />
+
 
 
 

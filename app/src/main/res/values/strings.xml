@@ -116,6 +116,12 @@
     <string name="english">English</string>
     <string name="spanish">Spanish</string>
     <string name="logout">Log Out</string>
+    <string name="issue">Issue</string>
+    <string name="issue_description">Issue Description</string>
+    <string name="send">Send</string>
+    <string name="help">Contact us</string>
+    <string name="your_progress">Your Progress</string>
+    <string name="gymtracker">GymTracker</string>
     <string-array name="days_of_week">
         <item>Monday</item>
         <item>Tuesday</item>
@@ -124,5 +130,19 @@
         <item>Friday</item>
         <item>Saturday</item>
         <item>Sunday</item>
+    </string-array>
+    <string-array name="months">
+<item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
     </string-array>
 </resources>

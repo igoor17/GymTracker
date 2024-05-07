@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +15,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -34,6 +38,7 @@ public class SettingsFragment extends Fragment {
     Spinner languageSpinner;
     Button saveButton;
     Button logoutButton;
+    TextView helpText;
 
     // Idioma seleccionado
     String selectedLanguageCode;
@@ -47,6 +52,13 @@ public class SettingsFragment extends Fragment {
         languageSpinner = view.findViewById(R.id.language_spinner);
         saveButton = view.findViewById(R.id.save_language_button);
         logoutButton = view.findViewById(R.id.logout_button);
+        helpText = view.findViewById(R.id.help_text_view);
+
+        String text = helpText.getText().toString();
+        SpannableString spannableString = new SpannableString(text);
+        spannableString.setSpan(new UnderlineSpan(), 0, text.length(), 0);
+        helpText.setText(spannableString);
+
 
         List<LanguageItem> languageItems = new ArrayList<>();
         languageItems.add(new LanguageItem(getString(R.string.english), R.drawable.en_flag));
@@ -79,6 +91,15 @@ public class SettingsFragment extends Fragment {
 
         logoutButton.setOnClickListener(v -> {
             logout();
+        });
+
+        helpText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.frame_layout, new HelpFragment());
+                transaction.commit();
+            }
         });
 
         return view;
@@ -130,4 +151,5 @@ public class SettingsFragment extends Fragment {
         }
         return 0; // Default to English
     }
+
 }

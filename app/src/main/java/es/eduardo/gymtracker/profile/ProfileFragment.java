@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -44,6 +45,10 @@ public class ProfileFragment extends Fragment {
     TextView profileImc;
     ImageView profileImage;
 
+    // Progress
+
+    Button progressButton;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -61,6 +66,7 @@ public class ProfileFragment extends Fragment {
         profileWeight = view.findViewById(R.id.profile_weight);
         profileImc = view.findViewById(R.id.profile_imc);
         profileImage = view.findViewById(R.id.profile_image);
+        progressButton = view.findViewById(R.id.progressButton);
         String userEmail=user.getEmail();
 
         // Obtén la información del usuario y establece los valores en los TextViews
@@ -90,6 +96,8 @@ public class ProfileFragment extends Fragment {
                     }
                 });
 
+        showProgress();
+
         editProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,5 +119,17 @@ public class ProfileFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void showProgress(){
+        progressButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Navegar al nuevo fragmento de progreso
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.frame_layout, new ProgressFragment());
+                transaction.commit();
+            }
+        });
     }
 }

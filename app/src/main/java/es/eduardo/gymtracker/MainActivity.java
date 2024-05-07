@@ -6,20 +6,31 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.work.Constraints;
+import androidx.work.NetworkType;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
+
 import es.eduardo.gymtracker.databinding.ActivityMainBinding;
 import es.eduardo.gymtracker.map.GymsFragment;
 import es.eduardo.gymtracker.profile.ProfileFragment;
 import es.eduardo.gymtracker.routines.NewRoutinesFragment;
+import es.eduardo.gymtracker.utils.IMCWorker;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -73,6 +84,9 @@ public class MainActivity extends AppCompatActivity {
         binding.addRoutines.setOnClickListener(v -> {
             replaceFragment(new NewRoutinesFragment());
         });
+
+        scheduleWeeklyTask();
+
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -90,5 +104,36 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, getString(R.string.location_granted), Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void scheduleWeeklyTask() {
+        Calendar calendar = Calendar.getInstance();
+        long currentTime = calendar.getTimeInMillis();
+
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        calendar.set(Calendar.HOUR_OF_DAY, 9);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+
+        long nextMonday = calendar.getTimeInMillis();
+
+        if (currentTime > nextMonday) {
+            calendar.add(Calendar.DAY_OF_YEAR, 7);
+            nextMonday = calendar.getTimeInMillis();
+        }
+
+        long delay = nextMonday - currentTime;
+        long delayInMinutes = TimeUnit.MILLISECONDS.toMinutes(delay);
+
+        Constraints constraints = new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build();
+
+        PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(IMCWorker.class, 7, TimeUnit.DAYS)
+                .setInitialDelay(delayInMinutes, TimeUnit.MINUTES)
+                .setConstraints(constraints)
+                .build();
+
+        WorkManager.getInstance(this).enqueue(workRequest);
     }
 }
