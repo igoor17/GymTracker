@@ -1,19 +1,21 @@
-package es.eduardo.gymtracker.map;
+package es.eduardo.gymtracker.gym;
 
-public class Gimnasio {
+public class Gym {
     private String nombre;
     private double latitud;
     private double longitud;
     private String address;
     private String phoneNumber;
 
-    public Gimnasio(String nombre,String address ,String phoneNumber,double latitud, double longitud) {
+    public Gym(String nombre, String address , String phoneNumber, double latitud, double longitud) {
         this.nombre = nombre;
         this.latitud = latitud;
         this.longitud = longitud;
         this.address = address;
         this.phoneNumber = phoneNumber;
     }
+
+
 
     public String getNombre() {
         return nombre;

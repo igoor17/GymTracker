@@ -17,6 +17,8 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import es.eduardo.gymtracker.gym.Gym;
+
 public class GetNearbyGymsTask {
     private static final String OVERPASS_API_URL = "http://overpass-api.de/api/interpreter?data="; // URL de la API de Overpass
 
@@ -44,22 +46,22 @@ public class GetNearbyGymsTask {
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                final List<Gimnasio> gimnasios = doInBackground();
+                final List<Gym> gyms = doInBackground();
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        onPostExecute(gimnasios);
+                        onPostExecute(gyms);
                     }
                 });
             }
         });
     }
 
-    protected List<Gimnasio> doInBackground() {
+    protected List<Gym> doInBackground() {
         String query = "[out:json];node[\"leisure\"=\"fitness_centre\"](" +
                 (latitudInferior) + "," + (longitudInferior) + "," +
                 (latitudSuperior) + "," + (longitudSuperior) + ");out;";
-        List<Gimnasio> gimnasios = new ArrayList<>();
+        List<Gym> gyms = new ArrayList<>();
         HttpURLConnection connection = null;
         InputStream inputStream = null;
         try {
@@ -72,7 +74,7 @@ public class GetNearbyGymsTask {
             Log.d("OverpassAPI", "Response code: " + responseCode);
             if (responseCode != HttpURLConnection.HTTP_OK) {
                 Log.d("OverpassAPI", "Failed to get data from Overpass API");
-                return gimnasios; // return the empty list instead of null
+                return gyms; // return the empty list instead of null
             }
 
             inputStream = connection.getInputStream();
@@ -95,15 +97,15 @@ public class GetNearbyGymsTask {
             }
         }
 
-        return gimnasios;
+        return gyms;
     }
 
-    protected void onPostExecute(List<Gimnasio> gimnasios) {
-        callback.onGymsReceived(gimnasios);
+    protected void onPostExecute(List<Gym> gyms) {
+        callback.onGymsReceived(gyms);
     }
 
-    private List<Gimnasio> parseGymsFromJson(String json) {
-        List<Gimnasio> gimnasios = new ArrayList<>();
+    private List<Gym> parseGymsFromJson(String json) {
+        List<Gym> gyms = new ArrayList<>();
 
         try {
             JSONObject jsonObject = new JSONObject(json);
@@ -125,14 +127,14 @@ public class GetNearbyGymsTask {
 
                 String address = street + " " + number + ", " + city + ", " + postalCode;
 
-                gimnasios.add(new Gimnasio(name,address,phoneNumber ,lat, lon));
-                Log.d("OverpassAPI", "Parsed " + gimnasios.size() + " gyms from JSON");
+                gyms.add(new Gym(name,address,phoneNumber ,lat, lon));
+                Log.d("OverpassAPI", "Parsed " + gyms.size() + " gyms from JSON");
             }
         } catch (Exception e) {
             e.printStackTrace();
             Log.e("OverpassAPI", "Error parsing gyms from JSON", e);
         }
 
-        return gimnasios;
+        return gyms;
     }
 }

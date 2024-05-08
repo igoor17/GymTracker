@@ -7,17 +7,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import es.eduardo.gymtracker.R;
+import es.eduardo.gymtracker.gym.Gym;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.osmdroid.config.Configuration;
@@ -145,24 +144,24 @@ public class GymsFragment extends Fragment {
                 visibleArea.getLonEast(),
                 new GymCallback() {
                     @Override
-                    public void onGymsReceived(List<Gimnasio> gimnasios) {
+                    public void onGymsReceived(List<Gym> gyms) {
                         // Elimina los marcadores existentes
                         mapView.getOverlays().clear();
 
                         // Añade nuevos marcadores para los gimnasios en el área visible
-                        for (Gimnasio gimnasio : gimnasios) {
-                            GeoPoint gymLocation = new GeoPoint(gimnasio.getLatitud(), gimnasio.getLongitud());
+                        for (Gym gym : gyms) {
+                            GeoPoint gymLocation = new GeoPoint(gym.getLatitud(), gym.getLongitud());
 
                             if (mapView != null) {
                                 Marker gymMarker = new Marker(mapView);
                                 gymMarker.setPosition(gymLocation);
                                 gymMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-                                gymMarker.setTitle(gimnasio.getNombre());
+                                gymMarker.setTitle(gym.getNombre());
 
                                 gymMarker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
                                     @Override
                                     public boolean onMarkerClick(Marker marker, MapView mapView) {
-                                        gymMarker.setInfoWindow(new GymInfoWindow(R.layout.popup_gyms, mapView, gimnasio, mAuth, db));
+                                        gymMarker.setInfoWindow(new GymInfoWindow(R.layout.popup_gyms, mapView, gym, mAuth, db));
                                         gymMarker.showInfoWindow();
                                         return true;
                                     }
@@ -185,7 +184,7 @@ public class GymsFragment extends Fragment {
     }
 
 
-    private void saveGymToFavorites(Gimnasio gimnasio) {
+    private void saveGymToFavorites(Gym gimnasio) {
         executor.execute(new Runnable() {
             @Override
             public void run() {

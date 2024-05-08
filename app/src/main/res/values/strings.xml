@@ -122,6 +122,9 @@
     <string name="help">Contact us</string>
     <string name="your_progress">Your Progress</string>
     <string name="gymtracker">GymTracker</string>
+    <string name="remove">Remove From Favs</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="address">Address</string>
     <string-array name="days_of_week">
         <item>Monday</item>
         <item>Tuesday</item>
@@ -132,7 +135,7 @@
         <item>Sunday</item>
     </string-array>
     <string-array name="months">
-<item>January</item>
+        <item>January</item>
         <item>February</item>
         <item>March</item>
         <item>April</item>

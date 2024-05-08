@@ -9,18 +9,17 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.OverlayWithIW;
 import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import es.eduardo.gymtracker.R;
+import es.eduardo.gymtracker.gym.Gym;
 
 public class GymInfoWindow extends BasicInfoWindow {
 
@@ -29,11 +28,11 @@ public class GymInfoWindow extends BasicInfoWindow {
     private FirebaseFirestore db;
 
     // Gimnasio
-    private Gimnasio gimnasio;
+    private Gym gym;
 
-    public GymInfoWindow(int layoutResId, MapView mapView, Gimnasio gimnasio, FirebaseAuth mAuth, FirebaseFirestore db) {
+    public GymInfoWindow(int layoutResId, MapView mapView, Gym gym, FirebaseAuth mAuth, FirebaseFirestore db) {
         super(layoutResId, mapView);
-        this.gimnasio = gimnasio;
+        this.gym = gym;
         this.mAuth = mAuth;
         this.db = db;
     }
@@ -45,20 +44,20 @@ public class GymInfoWindow extends BasicInfoWindow {
         TextView gymAddress = (TextView) mView.findViewById(R.id.gym_address);
         TextView gymPhone = (TextView) mView.findViewById(R.id.gym_phone_number);
 
-        gymName.setText(gimnasio.getNombre() != null ? gimnasio.getNombre() : "");
-        gymAddress.setText(gimnasio.getAddress() != null ? gimnasio.getAddress() : "");
-        gymPhone.setText(gimnasio.getPhoneNumber() != null ? gimnasio.getPhoneNumber() : "");
+        gymName.setText(gym.getNombre() != null ? gym.getNombre() : "");
+        gymAddress.setText(gym.getAddress() != null ? gym.getAddress() : "");
+        gymPhone.setText(gym.getPhoneNumber() != null ? gym.getPhoneNumber() : "");
 
         Button btnAddToFavorites = (Button) mView.findViewById(R.id.btn_add_to_favorites);
         btnAddToFavorites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveGymToFavorites(gimnasio);
+                saveGymToFavorites(gym);
             }
         });
     }
 
-    private void saveGymToFavorites(Gimnasio gimnasio) {
+    private void saveGymToFavorites(Gym gimnasio) {
         // Obtiene la instancia de Firestore y de FirebaseAuth
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
