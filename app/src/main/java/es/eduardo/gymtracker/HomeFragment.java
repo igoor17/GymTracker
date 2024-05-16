@@ -111,43 +111,11 @@ public class HomeFragment extends Fragment {
         armsImageView.setOnClickListener(imageViewClickListener);
         legsImageView.setOnClickListener(imageViewClickListener);
 
-        a.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveExercise("Bench Press", "Descend the bar smoothly toward the chest while inhaling. After 1 second, push the bar back to the starting position while exhaling. Repeat the movement until you complete the repetitions, and then place the bar back on the rack.\n" +
-                        "\n"+
-                        "TIPS: Focus on pushing the bar with the chest muscles and squeeze your glutes as you do so. If you are a beginner, use a spotter. If there isn't one, be conservative with the load you use.", "Chest", "chest");
-
-
-            }
-        });
 
         return view;
     }
 
-    private void saveExercise(String exerciseName, String description, String muscleGroup, String muscle) {
-        Map<String, Object> exercise = new HashMap<>();
-        exercise.put("name", exerciseName);
-        exercise.put("description", description);
-        exercise.put("imageUrl", "");
-        exercise.put("muscleGroup", muscleGroup);
 
-        db.collection("muscleGroup").document(muscle).collection("exercises")
-                .document(exerciseName)
-                .set(exercise)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("HomeFragment", "Exercise successfully written to Firestore");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("HomeFragment", "Error writing exercise to Firestore", e);
-                    }
-                });
-    }
 
     private void loadRoutines() {
         String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();

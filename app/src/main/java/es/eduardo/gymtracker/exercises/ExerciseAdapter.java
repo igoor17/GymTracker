@@ -22,16 +22,32 @@ import java.util.function.Consumer;
 import es.eduardo.gymtracker.R;
 import es.eduardo.gymtracker.exercises.ExerciseDisplayFragment;
 
+/**
+ * The type Exercise adapter.
+ */
 public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ExerciseViewHolder> {
 
     private List<Exercise> exercises;
     private Consumer<Exercise> onExerciseClicked;
 
+    /**
+     * Instantiates a new Exercise adapter.
+     *
+     * @param exercises         the exercises
+     * @param onExerciseClicked the on exercise clicked
+     */
     public ExerciseAdapter(List<Exercise> exercises, Consumer<Exercise> onExerciseClicked) {
         this.exercises = exercises;
         this.onExerciseClicked = onExerciseClicked;
     }
 
+    /**
+     * Called when RecyclerView needs a new {@link ExerciseViewHolder} of the given type to represent an item.
+     *
+     * @param parent The ViewGroup into which the new View will be added after it is bound to an adapter position.
+     * @param viewType The view type of the new View.
+     * @return A new ExerciseViewHolder that holds a View of the given view type.
+     */
     @NonNull
     @Override
     public ExerciseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -39,32 +55,62 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
         return new ExerciseViewHolder(view);
     }
 
+    /**
+     * Called by RecyclerView to display the data at the specified position. This method should update the contents of the {@link ExerciseViewHolder#itemView} to reflect the item at the given position.
+     *
+     * @param holder The ExerciseViewHolder which should be updated to represent the contents of the item at the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
+     */
     @Override
     public void onBindViewHolder(@NonNull ExerciseViewHolder holder, int position) {
         Exercise exercise = exercises.get(position);
         holder.bind(exercise, onExerciseClicked);
     }
 
+    /**
+     * Returns the total number of items in the data set held by the adapter.
+     *
+     * @return The total number of items in this adapter.
+     */
     @Override
     public int getItemCount() {
         return exercises.size();
     }
 
+    /**
+     * Update exercises.
+     *
+     * @param exercises the exercises
+     */
     public void updateExercises(List<Exercise> exercises) {
         this.exercises = exercises;
         notifyDataSetChanged();
     }
 
+    /**
+     * The type Exercise view holder.
+     */
     static class ExerciseViewHolder extends RecyclerView.ViewHolder {
         private TextView nameTextView;
         private ImageView backgroundImageView;
 
+        /**
+         * Instantiates a new Exercise view holder.
+         *
+         * @param itemView the item view
+         */
         public ExerciseViewHolder(@NonNull View itemView) {
             super(itemView);
             nameTextView = itemView.findViewById(R.id.name_text_view);
             backgroundImageView = itemView.findViewById(R.id.background_image_view);
         }
 
+        /**
+         * Bind.
+         *
+         * @param exercise          the exercise
+         * @param onExerciseClicked the on exercise clicked
+         */
         public void bind(Exercise exercise, Consumer<Exercise> onExerciseClicked) {
             nameTextView.setText(exercise.getName());
             Glide.with(itemView)

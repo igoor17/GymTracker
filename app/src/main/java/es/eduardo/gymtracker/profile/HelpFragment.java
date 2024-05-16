@@ -41,16 +41,16 @@ public class HelpFragment extends Fragment {
     }
 
     private void sendEmail(String issueTitle, String issueDescription) {
+
+        String staffEmail = "gymtracker.staff@gmail.com";
+
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
         emailIntent.setData(Uri.parse("mailto:"));
-        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"gymtracker.staff@gmail.com"});
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, staffEmail);
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, issueTitle);
         emailIntent.putExtra(Intent.EXTRA_TEXT, issueDescription);
 
-        if (emailIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            startActivity(emailIntent);
-        }else {
-            Toast.makeText(getActivity(), "No se encontró ninguna aplicación de correo electrónico", Toast.LENGTH_SHORT).show();
-        }
+        startActivity(emailIntent);
+
     }
 }

@@ -26,6 +26,17 @@ public class FavGymsFragment extends Fragment {
     private List<Gym> gyms;
     private GymAdapter gymAdapter;
 
+    /**
+     * Called to have the fragment instantiate its user interface view.
+     * This is optional, and non-graphical fragments can return null.
+     * This method inflates the layout for the fragment, initializes the UI elements,
+     * retrieves the user's favorite gyms from Firestore, and sets up the RecyclerView with the gyms.
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container If non-null, this is the parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
+     * @return Return the View for the fragment's UI, or null.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
