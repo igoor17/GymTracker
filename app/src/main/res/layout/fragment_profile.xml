@@ -217,6 +217,13 @@
         android:text="@string/your_progress"
         android:layout_marginTop="16dp" />
 
+    <Button
+        android:id="@+id/favGymsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/fav_gyms"
+        android:layout_marginTop="16dp" />
+
 
 
 
