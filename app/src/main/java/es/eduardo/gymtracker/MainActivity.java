@@ -15,21 +15,19 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import es.eduardo.gymtracker.databinding.ActivityMainBinding;
 import es.eduardo.gymtracker.map.GymsFragment;
 import es.eduardo.gymtracker.profile.ProfileFragment;
 import es.eduardo.gymtracker.routines.NewRoutinesFragment;
+import es.eduardo.gymtracker.store.StoreFragment;
 import es.eduardo.gymtracker.utils.IMCWorker;
 
 public class MainActivity extends AppCompatActivity {

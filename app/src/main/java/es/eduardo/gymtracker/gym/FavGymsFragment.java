@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,6 +27,8 @@ public class FavGymsFragment extends Fragment {
     private List<Gym> gyms;
     private GymAdapter gymAdapter;
 
+    private ImageButton backButton;
+
     /**
      * Called to have the fragment instantiate its user interface view.
      * This is optional, and non-graphical fragments can return null.
@@ -42,6 +45,7 @@ public class FavGymsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fav_gyms, container, false);
 
+        backButton = view.findViewById(R.id.backButton);
         favGymsRecyclerView = view.findViewById(R.id.fav_gyms_recycler_view);
         favGymsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -74,6 +78,13 @@ public class FavGymsFragment extends Fragment {
                         // Hubo un error al obtener los documentos
                     }
                 });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requireActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
 
         return view;
     }

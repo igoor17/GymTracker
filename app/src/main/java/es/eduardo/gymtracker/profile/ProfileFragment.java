@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import es.eduardo.gymtracker.R;
+import es.eduardo.gymtracker.gym.FavGymsFragment;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -45,8 +46,10 @@ public class ProfileFragment extends Fragment {
     TextView profileImc;
     ImageView profileImage;
 
-    // Progress
+    // Fav Gyms
+    Button favGymsButton;
 
+    // Progress
     Button progressButton;
 
     @Override
@@ -67,7 +70,18 @@ public class ProfileFragment extends Fragment {
         profileImc = view.findViewById(R.id.profile_imc);
         profileImage = view.findViewById(R.id.profile_image);
         progressButton = view.findViewById(R.id.progressButton);
+        favGymsButton = view.findViewById(R.id.favGymsButton);
         String userEmail=user.getEmail();
+
+        favGymsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Cambiar al fragmento FavGymsFragment
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.frame_layout, new FavGymsFragment());
+                transaction.commit();
+            }
+        });
 
         // Obtén la información del usuario y establece los valores en los TextViews
         db.collection("users").document(userEmail)

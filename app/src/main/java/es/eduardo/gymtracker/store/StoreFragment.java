@@ -1,4 +1,4 @@
-package es.eduardo.gymtracker;
+package es.eduardo.gymtracker.store;
 
 import android.os.Bundle;
 

@@ -34,6 +34,7 @@ import java.util.Map;
 import es.eduardo.gymtracker.exercises.ExercisesFragment;
 import es.eduardo.gymtracker.routines.Routine;
 import es.eduardo.gymtracker.routines.RoutineAdapter;
+import es.eduardo.gymtracker.store.Product;
 
 
 public class HomeFragment extends Fragment {
@@ -50,7 +51,6 @@ public class HomeFragment extends Fragment {
     // User Routines
     ViewPager2 viewPager;
     TextView noRoutinesTextView;
-    Button a;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,8 +64,6 @@ public class HomeFragment extends Fragment {
 
         viewPager = view.findViewById(R.id.viewPager);
         noRoutinesTextView = view.findViewById(R.id.noRoutinesTextView);
-
-        a=view.findViewById(R.id.buttonA);
 
         loadRoutines();
 
@@ -114,8 +112,6 @@ public class HomeFragment extends Fragment {
 
         return view;
     }
-
-
 
     private void loadRoutines() {
         String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
