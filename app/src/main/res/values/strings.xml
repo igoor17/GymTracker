@@ -131,6 +131,7 @@
     <string name="new_routine">New Routine</string>
     <string name="save_routine">Save Routine</string>
     <string name="weight_notifications">Weekly weighing notifications</string>
+    <string name="no_exercises">No exercises for this day</string>
     <string-array name="days_of_week">
         <item>Monday</item>
         <item>Tuesday</item>

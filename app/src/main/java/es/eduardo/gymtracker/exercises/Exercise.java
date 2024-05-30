@@ -1,9 +1,11 @@
 package es.eduardo.gymtracker.exercises;
 
+import java.io.Serializable;
+
 /**
  * The type Exercise.
  */
-public class Exercise {
+public class Exercise implements Serializable {
 
     private String name;
     private String description;

@@ -18,6 +18,7 @@ public class RoutineFragment extends Fragment {
 
     // Variables
     private Routine routine;
+    private View.OnClickListener onClickListener;
 
     // Info Rutina
     private ImageView routineImage;
@@ -29,6 +30,9 @@ public class RoutineFragment extends Fragment {
         this.routine = routine;
     }
 
+    public void setOnClickListener(View.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -46,6 +50,10 @@ public class RoutineFragment extends Fragment {
         routineName.setText(routine.getName());
         routineDays.setText(String.valueOf(routine.getDays()+" "+getString(R.string.days)));
         routineExercises.setText(String.valueOf(routine.getTotalExercises()+" "+getString(R.string.exercises)));
+
+        if (onClickListener != null) {
+            view.setOnClickListener(onClickListener);
+        }
 
         return view;
     }

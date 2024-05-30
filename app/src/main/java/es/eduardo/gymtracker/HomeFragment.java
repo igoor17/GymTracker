@@ -34,6 +34,7 @@ import java.util.Map;
 import es.eduardo.gymtracker.exercises.ExercisesFragment;
 import es.eduardo.gymtracker.routines.Routine;
 import es.eduardo.gymtracker.routines.RoutineAdapter;
+import es.eduardo.gymtracker.routines.RoutineDisplayFragment;
 import es.eduardo.gymtracker.store.Product;
 
 
@@ -141,7 +142,7 @@ public class HomeFragment extends Fragment {
                                     viewPager.setVisibility(View.VISIBLE);
                                     noRoutinesTextView.setVisibility(View.GONE);
                                     if (isAdded()) {
-                                        RoutineAdapter routineAdapter = new RoutineAdapter(HomeFragment.this, routines);
+                                        RoutineAdapter routineAdapter = new RoutineAdapter(getActivity(), routines, this::onRoutineSelected);
                                         viewPager.setAdapter(routineAdapter);
                                     }
                                 }
@@ -150,6 +151,25 @@ public class HomeFragment extends Fragment {
                             Log.w("HomeFragment", "Error getting documents.", task.getException());
                         }
                     }
+
+                    private void onRoutineSelected(Routine routine) {
+                        RoutineDisplayFragment routineDisplayFragment = new RoutineDisplayFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("routineName", routine.getName());
+                        routineDisplayFragment.setArguments(bundle);
+
+                        FragmentManager fragmentManager = getFragmentManager();
+                        if (fragmentManager != null) {
+                            fragmentManager.beginTransaction()
+                                    .replace(R.id.frame_layout, routineDisplayFragment)
+                                    .addToBackStack(null)
+                                    .commit();
+                        }
+                    }
                 });
     }
+
+
+
+
 }
