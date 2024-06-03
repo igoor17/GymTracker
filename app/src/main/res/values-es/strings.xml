@@ -116,6 +116,34 @@
     <string name="english">Inglés</string>
     <string name="spanish">Español</string>
     <string name="logout">Cerrar Sesión</string>
+    <string name="issue">Problema</string>
+    <string name="issue_description">Descripción del problema</string>
+    <string name="send">Enviar</string>
+    <string name="help">Contáctanos</string>
+    <string name="your_progress">Tu progreso</string>
+    <string name="gymtracker">GymTracker</string>
+    <string name="remove">Eliminar de favoritos</string>
+    <string name="phone_number">Número de teléfono</string>
+    <string name="address">Dirección</string>
+    <string name="fav_gyms">Gimnasios favoritos</string>
+    <string name="routine_name">Nombre de la rutina</string>
+    <string name="enter_routine_name">Introduce el nombre de la rutina</string>
+    <string name="new_routine">Nueva rutina</string>
+    <string name="save_routine">Guardar rutina</string>
+    <string name="weight_notifications">Notificaciones de peso semanal</string>
+    <string name="no_exercises">No hay ejercicios para este día</string>
+    <string name="store">Tienda</string>
+    <string name="nutrition">Nutrición</string>
+    <string name="creatine">Creatina</string>
+    <string name="protein">Proteína</string>
+    <string name="preworkout">Pre-entrenamiento</string>
+    <string name="accessories">Accesorios</string>
+    <string name="straps">Correas</string>
+    <string name="shakers">Agitadores</string>
+    <string name="towels">Toallas</string>
+    <string name="wristbands">Muñequeras</string>
+    <string name="category_accessories">accessories_es</string>
+    <string name="category_nutrition">nutrition_es</string>
     <string-array name="days_of_week">
         <item>Lunes</item>
         <item>Martes</item>

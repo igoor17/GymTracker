@@ -1,6 +1,7 @@
 package es.eduardo.gymtracker.routines;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +69,7 @@ public class RoutineDisplayFragment extends Fragment {
                 // Obtén el número del día de la semana del texto del chip y úsalo para obtener el nombre del día de la semana en inglés
                 int dayOfWeekNumber = Integer.parseInt(chip.getText().toString()) - 1;
                 String dayOfWeek = daysOfWeek[dayOfWeekNumber];
+                Log.d("RoutineDisplayFragment", "Day: " + dayOfWeek);
                 loadExercisesForDay(dayOfWeek);
             }
         });
@@ -77,6 +79,7 @@ public class RoutineDisplayFragment extends Fragment {
 
     private void loadExercisesForDay(String dayOfWeek) {
         String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        Log.d("RoutineDisplayFragment", "Loading exercises for day: " + dayOfWeek);
 
         db.collection("users").document(userEmail).collection("routines")
                 .document(routineName).collection("exercises")
@@ -87,8 +90,9 @@ public class RoutineDisplayFragment extends Fragment {
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         List<Exercise> exercises = new ArrayList<>();
                         for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                            String name = documentSnapshot.getId(); // El nombre del ejercicio es el mismo que el nombre de la colección
-                            exercises.add(new Exercise(name, "", "", ""));
+                            String name = documentSnapshot.getId();
+                            exercises.add(new Exercise(name));
+                            Log.d("RoutineDisplayFragment", "Exercise: " + name);
                         }
                         if (exercises.isEmpty()) {
                             noExercisesTextView.setVisibility(View.VISIBLE);

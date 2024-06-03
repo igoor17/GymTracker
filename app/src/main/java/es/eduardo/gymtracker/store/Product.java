@@ -6,7 +6,7 @@ public class Product {
     private String link;
     private String imageUrl;
     private String options;
-    private String flavor;
+    private String store;
 
     public Product(String name, String price, String link, String imageUrl, String options) {
         this.name = name;
@@ -15,6 +15,16 @@ public class Product {
         this.imageUrl = imageUrl;
         this.options = options;
     }
+
+    public Product(String name, String price, String link, String imageUrl, String options, String store) {
+        this.name = name;
+        this.price = price;
+        this.link = link;
+        this.imageUrl = imageUrl;
+        this.options = options;
+        this.store = store;
+    }
+
 
 
 
@@ -36,5 +46,9 @@ public class Product {
 
     public String getOptions() {
         return options;
+    }
+
+    public String getStore() {
+        return store;
     }
 }

@@ -22,48 +22,70 @@
             android:id="@+id/chip_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            app:singleSelection="true">
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_monday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:checkable="true"
+                android:clickable="true"
+                android:focusable="true"
                 android:text="1" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_tuesday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:checkable="true"
+                android:clickable="true"
+                android:focusable="true"
                 android:text="2" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_wednesday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:checkable="true"
+                android:clickable="true"
+                android:focusable="true"
                 android:text="3" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_thursday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:checkable="true"
+                android:clickable="true"
+                android:focusable="true"
                 android:text="4" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_friday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:checkable="true"
+                android:clickable="true"
+                android:focusable="true"
                 android:text="5" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_saturday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:checkable="true"
+                android:clickable="true"
+                android:focusable="true"
                 android:text="6" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_sunday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:checkable="true"
+                android:clickable="true"
+                android:focusable="true"
                 android:text="7" />
         </com.google.android.material.chip.ChipGroup>
 

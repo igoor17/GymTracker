@@ -132,6 +132,18 @@
     <string name="save_routine">Save Routine</string>
     <string name="weight_notifications">Weekly weighing notifications</string>
     <string name="no_exercises">No exercises for this day</string>
+    <string name="store">Store</string>
+    <string name="nutrition">Nutrition</string>
+    <string name="creatine">Creatine</string>
+    <string name="protein">Protein</string>
+    <string name="preworkout">Pre-Workout</string>
+    <string name="accessories">Accessories</string>
+    <string name="straps">Straps</string>
+    <string name="shakers">Shakers</string>
+    <string name="towels">Towels</string>
+    <string name="wristbands">Wristbands</string>
+    <string name="category_accessories">accessories</string>
+    <string name="category_nutrition">nutrition</string>
     <string-array name="days_of_week">
         <item>Monday</item>
         <item>Tuesday</item>

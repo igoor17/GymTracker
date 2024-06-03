@@ -149,8 +149,8 @@ public class NewRoutinesFragment extends Fragment {
                                         db.collection("users").document(userEmail)
                                                 .collection("routines").document(routineName)
                                                 .collection("exercises").document(dayName)
-                                                .collection(exercise.getName())
-                                                .add(exerciseDetails);
+                                                .collection("exercises").document(exercise.getName())
+                                                .set(exerciseDetails);
                                     }
                                 }
                             })
