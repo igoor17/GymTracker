@@ -144,6 +144,10 @@
     <string name="wristbands">Wristbands</string>
     <string name="category_accessories">accessories</string>
     <string name="category_nutrition">nutrition</string>
+    <string name="hsn">HSN</string>
+    <string name="myprotein">MyProtein</string>
+    <string name="prozis">Prozis</string>
+    <string name="productimage">Product Image</string>
     <string-array name="days_of_week">
         <item>Monday</item>
         <item>Tuesday</item>
