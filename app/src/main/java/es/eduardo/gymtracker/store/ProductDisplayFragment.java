@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,6 +33,10 @@ public class ProductDisplayFragment extends Fragment {
         RecyclerView hsnRecyclerView = view.findViewById(R.id.hsnRecyclerView);
         RecyclerView myProteinRecyclerView = view.findViewById(R.id.myProteinRecyclerView);
         RecyclerView prozisRecyclerView = view.findViewById(R.id.prozisRecyclerView);
+
+        hsnRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        myProteinRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        prozisRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // Inicializa los adaptadores con listas vacías
         List<Product> emptyList = new ArrayList<>();

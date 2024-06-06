@@ -25,7 +25,6 @@ public class Product {
         this.store = store;
     }
 
-
     public Product(){
 
     }

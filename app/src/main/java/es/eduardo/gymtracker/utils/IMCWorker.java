@@ -7,6 +7,8 @@ import androidx.work.WorkerParameters;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -48,7 +50,7 @@ public class IMCWorker extends Worker {
                             data.put("weight", weight);
 
                             db.collection("users").document(userEmail).collection(month).document(week)
-                                    .set(data)
+                                    .set(data, SetOptions.merge())
                                     .addOnSuccessListener(aVoid -> {
                                         // El documento se creó correctamente
                                     })
