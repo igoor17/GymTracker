@@ -48,8 +48,6 @@ public class LoginActivity extends AppCompatActivity {
     TextView RedirectForgotPassText;
     Button googleLoginButton;
 
-    Executor executor = Executors.newSingleThreadExecutor();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
