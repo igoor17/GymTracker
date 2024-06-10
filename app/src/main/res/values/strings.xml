@@ -148,6 +148,7 @@
     <string name="myprotein">MyProtein</string>
     <string name="prozis">Prozis</string>
     <string name="productimage">Product Image</string>
+    <string name="failed_to_write_document">Failed to write document</string>
     <string-array name="days_of_week">
         <item>Monday</item>
         <item>Tuesday</item>

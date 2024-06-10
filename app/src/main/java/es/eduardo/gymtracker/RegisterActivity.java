@@ -122,6 +122,30 @@ public class RegisterActivity extends AppCompatActivity {
                                                             public void onComplete(@NonNull Task<AuthResult> task) {
                                                                 if (task.isSuccessful()) {
                                                                     // Code to execute after successful registration
+                                                                    FirebaseUser user = mAuth.getCurrentUser();
+                                                                    Map<String, Object> userMap = new HashMap<>();
+                                                                    userMap.put("name", nameText);
+                                                                    userMap.put("username", usernameText);
+                                                                    userMap.put("email", emailText);
+
+                                                                    db.collection("users").document(user.getEmail())
+                                                                            .set(userMap)
+                                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                @Override
+                                                                                public void onSuccess(Void aVoid) {
+                                                                                    // Document was successfully written
+                                                                                    Intent intent = new Intent(RegisterActivity.this, NewUserInfoActivity.class);
+                                                                                    startActivity(intent);
+                                                                                    finish();
+                                                                                }
+                                                                            })
+                                                                            .addOnFailureListener(new OnFailureListener() {
+                                                                                @Override
+                                                                                public void onFailure(@NonNull Exception e) {
+                                                                                    // Write failed
+                                                                                    Toast.makeText(RegisterActivity.this, getString(R.string.failed_to_write_document), Toast.LENGTH_SHORT).show();
+                                                                                }
+                                                                            });
                                                                 } else {
                                                                     // If sign in fails, display a message to the user.
                                                                     runOnUiThread(new Runnable() {

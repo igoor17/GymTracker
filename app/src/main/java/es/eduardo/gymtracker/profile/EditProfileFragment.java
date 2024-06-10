@@ -160,55 +160,7 @@ public class EditProfileFragment extends Fragment {
                         fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
-
-                                double height = Double.parseDouble(profileHeightEdit.getText().toString());
-                                double weight = Double.parseDouble(profileWeightEdit.getText().toString());
-
-                                // Convertir altura a metros
-                                double heightInM = height / 100;
-
-                                // Calcular IMC
-                                double imc = weight / Math.pow(heightInM, 2);
-                                Map<String, Object> userMap = new HashMap<>();
-                                userMap.put("name", profileNameEdit.getText().toString());
-                                userMap.put("age", profileAgeEdit.getText().toString());
-                                userMap.put("height", profileHeightEdit.getText().toString());
-                                userMap.put("weight", profileWeightEdit.getText().toString());
-                                userMap.put("imageUrl", uri.toString());
-                                userMap.put("bmi", imc);
-
-                                db.collection("users").document(user.getEmail())
-                                        .update(userMap)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                if (isAdded()) {
-                                                    getActivity().runOnUiThread(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            Toast.makeText(getActivity(), getString(R.string.profile_updated), Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    });
-                                                }
-                                                // Volver al fragmento de perfil
-                                                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                                                transaction.replace(R.id.frame_layout, new ProfileFragment());
-                                                transaction.commit();
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                if (isAdded()) {
-                                                    getActivity().runOnUiThread(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            Toast.makeText(getActivity(), getString(R.string.error_update_profile), Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    });
-                                                }
-                                            }
-                                        });
+                                updateProfile(uri.toString());
                             }
                         });
                     }
@@ -222,7 +174,58 @@ public class EditProfileFragment extends Fragment {
                 e.printStackTrace();
             }
         } else {
-            Toast.makeText(getActivity(), "No file selected.", Toast.LENGTH_SHORT).show();
+            updateProfile(null);
         }
+    }
+
+    private void updateProfile(String imageUrl) {
+        double height = Double.parseDouble(profileHeightEdit.getText().toString());
+        double weight = Double.parseDouble(profileWeightEdit.getText().toString());
+
+        // Convertir altura a metros
+        double heightInM = height / 100;
+
+        // Calcular IMC
+        double imc = weight / Math.pow(heightInM, 2);
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("name", profileNameEdit.getText().toString());
+        userMap.put("age", profileAgeEdit.getText().toString());
+        userMap.put("height", profileHeightEdit.getText().toString());
+        userMap.put("weight", profileWeightEdit.getText().toString());
+        userMap.put("imageUrl", imageUrl);
+        userMap.put("bmi", imc);
+
+        db.collection("users").document(user.getEmail())
+                .update(userMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        if (isAdded()) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getActivity(), getString(R.string.profile_updated), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                        // Volver al fragmento de perfil
+                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                        transaction.replace(R.id.frame_layout, new ProfileFragment());
+                        transaction.commit();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        if (isAdded()) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getActivity(), getString(R.string.error_update_profile), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }
+                });
     }
 }
