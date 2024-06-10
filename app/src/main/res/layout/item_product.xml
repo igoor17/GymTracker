@@ -8,7 +8,7 @@
         android:id="@+id/product_image_view"
         android:layout_width="144dp"
         android:layout_height="173dp"
-        android:alpha="0.3"
+        android:alpha="0.5"
         android:contentDescription="@string/productimage"
         android:scaleType="centerCrop" />
 
