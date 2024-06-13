@@ -16,7 +16,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import es.eduardo.gymtracker.R;
 import es.eduardo.gymtracker.exercises.Exercise;
@@ -100,10 +102,33 @@ public class DayFragment extends Fragment {
     }
 
     /**
+     * Map of correspondences between the names of muscle groups in Spanish and English.
+     * This map is used to get the English name of the selected muscle group,
+     * which is used to fetch the corresponding exercises from Firestore.
+     */
+    private static final Map<String, String> MUSCLE_GROUP_MAP = new HashMap<String, String>() {{
+        put("pecho", "chest");
+        put("espalda", "back");
+        put("piernas", "legs");
+        put("hombros", "shoulders");
+        put("brazos", "arms");
+        put("abdominales", "abs");
+    }};
+
+    /**
      * Loads exercises from Firestore based on the selected muscle group and updates the UI.
      */
     private void loadExercisesFromFirestore() {
-        db.collection("muscleGroup").document(muscleGroup).collection("exercises")
+        // Get the current locale
+        String locale = getResources().getConfiguration().locale.getLanguage();
+
+        // Get the English name of the muscle group
+        String muscleGroupEnglish = MUSCLE_GROUP_MAP.get(muscleGroup);
+
+        // Append "_es" to the muscle group if the locale is Spanish
+        String documentName = "es".equals(locale) ? muscleGroupEnglish + "_es" : muscleGroupEnglish;
+
+        db.collection("muscleGroup").document(documentName).collection("exercises")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
