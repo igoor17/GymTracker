@@ -10,9 +10,9 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import android.os.Handler;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -25,36 +25,36 @@ import java.util.concurrent.Executors;
 
 public class NewUserInfoActivity extends AppCompatActivity {
 
-    //Firebase
+    // Firebase
     FirebaseFirestore db;
     FirebaseAuth mAuth;
 
-    //Weight
+    // Weight
     RelativeLayout weightPlus;
     RelativeLayout weightMinus;
     TextView weightTxt;
-    int userWeightValue=50;
+    int userWeightValue = 50;
 
-    //Height
+    // Height
     SeekBar seekBar;
     TextView userHeight;
     int userHeightValue;
 
-    //Age
+    // Age
     RelativeLayout agePlus;
     RelativeLayout ageMinus;
     TextView ageTxt;
-    int userAgeValue=19;
+    int userAgeValue = 19;
 
-    //Gender
+    // Gender
     TextView maleTxt;
     TextView femaleTxt;
     String genderValue;
 
-    //NextButton
+    // NextButton
     Button nextButton;
 
-    //Executor
+    // Executor for database operations
     Executor executor;
 
     @Override
@@ -62,9 +62,11 @@ public class NewUserInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_user_info);
 
+        // Initialize Firebase instances
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
+        // Initialize views
         seekBar = findViewById(R.id.Seekbar);
         userHeight = findViewById(R.id.height_txt);
         weightPlus = findViewById(R.id.weight_plus);
@@ -75,63 +77,62 @@ public class NewUserInfoActivity extends AppCompatActivity {
         ageTxt = findViewById(R.id.age_txt);
         maleTxt = findViewById(R.id.maleTxt);
         femaleTxt = findViewById(R.id.femaleTxt);
-        nextButton= findViewById(R.id.nextButton);
+        nextButton = findViewById(R.id.nextButton);
 
-        // Initialize the executor
+        // Initialize the executor for background tasks
         executor = Executors.newSingleThreadExecutor();
 
+        // Setup UI components and listeners
         seekBarProgress();
         weightUserProgress();
         ageUserProgress();
         genderSelect();
         saveUserInfo();
-
     }
 
+    // Method to save user information to Firebase
     private void saveUserInfo() {
         nextButton.setOnClickListener(view -> {
+            // Retrieve user input values
             String userAge = String.valueOf(userAgeValue);
             String userWeight = String.valueOf(userWeightValue);
             String userHeight = String.valueOf(userHeightValue);
 
-            // Create a new user object with the user's information
+            // Create a map to store user data
             Map<String, Object> user = new HashMap<>();
             user.put("age", userAge);
             user.put("weight", userWeight);
             user.put("height", userHeight);
             user.put("gender", genderValue);
 
-
-            // Get the current user's email
+            // Get the current user's email from Firebase authentication
             String userEmail = mAuth.getCurrentUser().getEmail();
 
-            // Update the user's information in the database
+            // Update user data in Firestore database
             executor.execute(() -> {
                 db.collection("users").document(userEmail)
                         .update(user)
                         .addOnSuccessListener(aVoid -> {
-                            // User information updated successfully
-                            // Redirect the user to the next activity
+                            // On successful update, proceed to next activity (ImcActivity)
                             Intent intent = new Intent(NewUserInfoActivity.this, ImcActivity.class);
                             startActivity(intent);
                         })
                         .addOnFailureListener(e -> {
-                            // User information failed to update
-                            // Display an error message to the user
+                            // Display error message if update fails
                             runOnUiThread(() -> Toast.makeText(NewUserInfoActivity.this, getString(R.string.failed_update_user), Toast.LENGTH_SHORT).show());
                         });
             });
         });
     }
 
-
+    // Method to handle SeekBar progress changes for height
     private void seekBarProgress() {
-
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // Update TextView with selected height in cm
                 userHeight.setText(progress + " cm");
-                userHeightValue = progress;
+                userHeightValue = progress; // Update userHeightValue with selected height
             }
 
             @Override
@@ -144,144 +145,149 @@ public class NewUserInfoActivity extends AppCompatActivity {
         });
     }
 
-    private void weightUserProgress(){
-
+    // Method to handle weight adjustments
+    private void weightUserProgress() {
         final Handler handler = new Handler();
-        final int delay = 100; //milliseconds
+        final int delay = 100; // Delay for long press actions
 
+        // OnClickListener for weight increase
         weightPlus.setOnClickListener(v -> {
             int weight = Integer.parseInt(weightTxt.getText().toString());
             weight++;
             weightTxt.setText(String.valueOf(weight));
-            userWeightValue = weight;
+            userWeightValue = weight; // Update userWeightValue
         });
 
+        // LongClickListener for continuous weight increase
         weightPlus.setOnLongClickListener(v -> {
-            handler.postDelayed(new Runnable(){
-                public void run(){
+            handler.postDelayed(new Runnable() {
+                public void run() {
                     int weight = Integer.parseInt(weightTxt.getText().toString());
                     weight++;
                     weightTxt.setText(String.valueOf(weight));
-                    userWeightValue = weight;
-                    handler.postDelayed(this, delay);
+                    userWeightValue = weight; // Update userWeightValue
+                    handler.postDelayed(this, delay); // Repeat the action with delay
                 }
             }, delay);
             return true;
         });
 
+        // TouchListener to stop continuous weight increase on touch release
         weightPlus.setOnTouchListener((v, event) -> {
-            if(event.getAction() == MotionEvent.ACTION_UP){
-                handler.removeCallbacksAndMessages(null);
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                handler.removeCallbacksAndMessages(null); // Remove callbacks to stop repeating action
             }
             return false;
         });
 
-
+        // Similar setup for weight decrease
         weightMinus.setOnClickListener(v -> {
             int weight = Integer.parseInt(weightTxt.getText().toString());
             weight--;
             weightTxt.setText(String.valueOf(weight));
-            userWeightValue = weight;
+            userWeightValue = weight; // Update userWeightValue
         });
 
         weightMinus.setOnLongClickListener(v -> {
-            handler.postDelayed(new Runnable(){
-                public void run(){
+            handler.postDelayed(new Runnable() {
+                public void run() {
                     int weight = Integer.parseInt(weightTxt.getText().toString());
                     weight--;
                     weightTxt.setText(String.valueOf(weight));
-                    userWeightValue = weight;
-                    handler.postDelayed(this, delay);
+                    userWeightValue = weight; // Update userWeightValue
+                    handler.postDelayed(this, delay); // Repeat the action with delay
                 }
             }, delay);
             return true;
         });
 
         weightMinus.setOnTouchListener((v, event) -> {
-            if(event.getAction() == MotionEvent.ACTION_UP){
-                handler.removeCallbacksAndMessages(null);
-
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                handler.removeCallbacksAndMessages(null); // Remove callbacks to stop repeating action
             }
             return false;
         });
-
     }
 
-    private void ageUserProgress(){
-
+    // Method to handle age adjustments
+    private void ageUserProgress() {
         final Handler handler = new Handler();
-        final int delay = 100; //milliseconds
+        final int delay = 100; // Delay for long press actions
 
+        // OnClickListener for age increase
         agePlus.setOnClickListener(v -> {
             int age = Integer.parseInt(ageTxt.getText().toString());
             age++;
             ageTxt.setText(String.valueOf(age));
-            userAgeValue = age;
+            userAgeValue = age; // Update userAgeValue
         });
 
+        // LongClickListener for continuous age increase
         agePlus.setOnLongClickListener(v -> {
-            handler.postDelayed(new Runnable(){
-                public void run(){
+            handler.postDelayed(new Runnable() {
+                public void run() {
                     int age = Integer.parseInt(ageTxt.getText().toString());
                     age++;
                     ageTxt.setText(String.valueOf(age));
-                    userAgeValue = age;
-                    handler.postDelayed(this, delay);
+                    userAgeValue = age; // Update userAgeValue
+                    handler.postDelayed(this, delay); // Repeat the action with delay
                 }
             }, delay);
             return true;
         });
 
+        // TouchListener to stop continuous age increase on touch release
         agePlus.setOnTouchListener((v, event) -> {
-            if(event.getAction() == MotionEvent.ACTION_UP){
-                handler.removeCallbacksAndMessages(null);
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                handler.removeCallbacksAndMessages(null); // Remove callbacks to stop repeating action
             }
             return false;
         });
 
+        // Similar setup for age decrease
         ageMinus.setOnClickListener(v -> {
             int age = Integer.parseInt(ageTxt.getText().toString());
             age--;
             ageTxt.setText(String.valueOf(age));
-            userAgeValue = age;
+            userAgeValue = age; // Update userAgeValue
         });
 
         ageMinus.setOnLongClickListener(v -> {
-            handler.postDelayed(new Runnable(){
-                public void run(){
+            handler.postDelayed(new Runnable() {
+                public void run() {
                     int age = Integer.parseInt(ageTxt.getText().toString());
                     age--;
                     ageTxt.setText(String.valueOf(age));
-                    userAgeValue = age;
-                    handler.postDelayed(this, delay);
+                    userAgeValue = age; // Update userAgeValue
+                    handler.postDelayed(this, delay); // Repeat the action with delay
                 }
             }, delay);
             return true;
         });
 
         ageMinus.setOnTouchListener((v, event) -> {
-            if(event.getAction() == MotionEvent.ACTION_UP){
-                handler.removeCallbacksAndMessages(null);
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                handler.removeCallbacksAndMessages(null); // Remove callbacks to stop repeating action
             }
             return false;
         });
-
     }
 
-    private void genderSelect(){
+    // Method to handle gender selection
+    private void genderSelect() {
         maleTxt.setOnClickListener(view -> {
-            // Change the appearance of the TextViews to indicate selection
+            // Change the appearance of TextViews to indicate selection
             maleTxt.setBackgroundColor(Color.LTGRAY); // Change color to indicate selection
-            femaleTxt.setBackgroundColor(Color.TRANSPARENT); // Remove selection
+            femaleTxt.setBackgroundColor(Color.TRANSPARENT); // Remove selection from other TextView
 
             // Update genderValue
             genderValue = "male";
         });
 
         femaleTxt.setOnClickListener(view -> {
-            // Change the appearance of the TextViews to indicate selection
+            // Change the appearance of TextViews to indicate selection
             femaleTxt.setBackgroundColor(Color.LTGRAY); // Change color to indicate selection
-            maleTxt.setBackgroundColor(Color.TRANSPARENT); // Remove selection
+            maleTxt.setBackgroundColor(Color.TRANSPARENT); // Remove selection from other TextView
 
             // Update genderValue
             genderValue = "female";

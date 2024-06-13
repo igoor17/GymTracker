@@ -14,12 +14,15 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+/**
+ * Activity for handling password reset functionality.
+ */
 public class ForgotPassActivity extends AppCompatActivity {
 
-    //Firebase
+    // Firebase Authentication instance
     FirebaseAuth mAuth;
 
-    //UI
+    // UI elements
     EditText email;
     Button resetButton;
 
@@ -33,11 +36,15 @@ public class ForgotPassActivity extends AppCompatActivity {
         email = findViewById(R.id.forgot_email);
         resetButton = findViewById(R.id.resPass);
 
+        // Initialize password reset process
         resetPassword();
     }
 
+    /**
+     * Sets up the OnClickListener for the reset password button.
+     * Performs the password reset operation when the button is clicked.
+     */
     private void resetPassword(){
-        // Resetea la contraseña del usuario
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -48,6 +55,7 @@ public class ForgotPassActivity extends AppCompatActivity {
                     return;
                 }
 
+                // Send password reset email
                 mAuth.sendPasswordResetEmail(emailText).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {

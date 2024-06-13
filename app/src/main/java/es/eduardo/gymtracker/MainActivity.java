@@ -30,9 +30,13 @@ import es.eduardo.gymtracker.routines.NewRoutinesFragment;
 import es.eduardo.gymtracker.store.StoreFragment;
 import es.eduardo.gymtracker.utils.IMCWorker;
 
+/**
+ * MainActivity is the main entry point of the GymTracker application after user authentication.
+ * It manages navigation, permissions, and background tasks scheduling.
+ */
 public class MainActivity extends AppCompatActivity {
 
-    private static final int REQUEST_LOCATION_PERMISSION = 1; // Código de solicitud para permiso de ubicación
+    private static final int REQUEST_LOCATION_PERMISSION = 1; // Request code for location permission
     ActivityMainBinding binding;
     FirebaseUser currentUser;
 
@@ -43,28 +47,31 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if(currentUser==null){
+        if (currentUser == null) {
+            // If no user is logged in, redirect to LoginActivity
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
             return;
         }
 
+        // Remove background from BottomNavigationView for better UI integration
         binding.bottomNavigationView.setBackground(null);
 
+        // Start with HomeFragment as the default fragment
         replaceFragment(new HomeFragment());
 
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+        // Request location permission if not granted
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_LOCATION_PERMISSION);
         }
 
+        // Handle navigation item clicks in BottomNavigationView
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
-
             int itemId = item.getItemId();
-
             if (itemId == R.id.home) {
                 replaceFragment(new HomeFragment());
             } else if (itemId == R.id.gyms) {
@@ -74,19 +81,22 @@ public class MainActivity extends AppCompatActivity {
             } else if (itemId == R.id.store) {
                 replaceFragment(new StoreFragment());
             }
-
             return false;
-
         });
 
+        // Handle click on addRoutines button to navigate to NewRoutinesFragment
         binding.addRoutines.setOnClickListener(v -> {
             replaceFragment(new NewRoutinesFragment());
         });
 
+        // Schedule a weekly background task using WorkManager
         scheduleWeeklyTask();
-
     }
 
+    /**
+     * Replaces the current fragment in MainActivity's frame layout with a new fragment.
+     * @param fragment The fragment to replace the current fragment with.
+     */
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -94,6 +104,12 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
+    /**
+     * Handles the result of location permission request.
+     * @param requestCode The request code passed to requestPermissions().
+     * @param permissions The requested permissions.
+     * @param grantResults The results for each permission requested.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -104,6 +120,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Schedules a weekly background task using WorkManager.
+     * The task is scheduled to run every Monday at 9:00 AM.
+     */
     private void scheduleWeeklyTask() {
         Calendar calendar = Calendar.getInstance();
         long currentTime = calendar.getTimeInMillis();

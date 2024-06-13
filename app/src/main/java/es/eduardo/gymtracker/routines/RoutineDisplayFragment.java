@@ -25,13 +25,15 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import es.eduardo.gymtracker.R;
 import es.eduardo.gymtracker.exercises.Exercise;
 import es.eduardo.gymtracker.exercises.ExerciseAdapter;
 import es.eduardo.gymtracker.exercises.ExerciseDisplayFragment;
 
+/**
+ * Fragment for displaying details of a specific routine, including exercises for each day of the week.
+ */
 public class RoutineDisplayFragment extends Fragment {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -40,9 +42,17 @@ public class RoutineDisplayFragment extends Fragment {
     private ExerciseAdapter exerciseAdapter;
     private TextView noExercisesTextView;
 
-    // Mapeo de los números de los chips a los nombres de los días de la semana en inglés
+    // Mapping of chip numbers to English names of days of the week
     private String[] daysOfWeek;
 
+    /**
+     * Inflates the layout for this fragment and initializes necessary UI components.
+     *
+     * @param inflater           LayoutInflater to inflate the layout.
+     * @param container          ViewGroup container for the fragment UI.
+     * @param savedInstanceState Saved state of the fragment.
+     * @return Inflated View of the fragment.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -56,7 +66,7 @@ public class RoutineDisplayFragment extends Fragment {
         routineName = getArguments().getString("routineName");
         routineNameTextView.setText(routineName);
 
-        // Obtener los días de la semana del string-array en los recursos
+        // Get days of the week from string-array resources
         daysOfWeek = getResources().getStringArray(R.array.days_of_week);
 
         exerciseAdapter = new ExerciseAdapter(new ArrayList<>(), this::onExerciseSelected);
@@ -66,7 +76,7 @@ public class RoutineDisplayFragment extends Fragment {
         chipGroup.setOnCheckedChangeListener((group, checkedId) -> {
             Chip chip = group.findViewById(checkedId);
             if (chip != null) {
-                // Obtén el número del día de la semana del texto del chip y úsalo para obtener el nombre del día de la semana en inglés
+                // Get the day of the week number from the chip text and use it to get the English day name
                 int dayOfWeekNumber = Integer.parseInt(chip.getText().toString()) - 1;
                 String dayOfWeek = daysOfWeek[dayOfWeekNumber];
                 Log.d("RoutineDisplayFragment", "Day: " + dayOfWeek);
@@ -77,6 +87,11 @@ public class RoutineDisplayFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Loads exercises for a specific day of the week from Firestore.
+     *
+     * @param dayOfWeek English name of the day of the week.
+     */
     private void loadExercisesForDay(String dayOfWeek) {
         String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
         Log.d("RoutineDisplayFragment", "Loading exercises for day: " + dayOfWeek);
@@ -106,16 +121,22 @@ public class RoutineDisplayFragment extends Fragment {
                 });
     }
 
+    /**
+     * Handles the event when an exercise is selected.
+     * Navigates to ExerciseDisplayFragment to display details of the selected exercise.
+     *
+     * @param exercise The selected exercise.
+     */
     public void onExerciseSelected(Exercise exercise) {
-        // Crear una nueva instancia del fragmento de detalles del ejercicio
+        // Create a new instance of ExerciseDisplayFragment
         ExerciseDisplayFragment exerciseDisplayFragment = new ExerciseDisplayFragment();
 
-        // Crear un nuevo Bundle para pasar el ejercicio seleccionado al fragmento de detalles del ejercicio
+        // Create a new Bundle to pass the selected exercise to ExerciseDisplayFragment
         Bundle bundle = new Bundle();
         bundle.putSerializable("selected_exercise", exercise);
         exerciseDisplayFragment.setArguments(bundle);
 
-        // Navegar al fragmento de detalles del ejercicio
+        // Navigate to ExerciseDisplayFragment
         FragmentManager fragmentManager = getFragmentManager();
         if (fragmentManager != null) {
             fragmentManager.beginTransaction()
@@ -123,6 +144,5 @@ public class RoutineDisplayFragment extends Fragment {
                     .addToBackStack(null)
                     .commit();
         }
-
     }
 }

@@ -14,13 +14,16 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import es.eduardo.gymtracker.utils.Utils;
 
+/**
+ * Activity to calculate and display the Body Mass Index (BMI) of the logged-in user.
+ */
 public class ImcActivity extends AppCompatActivity {
 
-    //Firebase
+    // Firebase
     FirebaseFirestore db;
     FirebaseAuth mAuth;
 
-    //UI
+    // UI elements
     TextView ageTxt, conditionTxt, imcTxt, suggestionTxt;
     Button nextButton;
 
@@ -42,7 +45,10 @@ public class ImcActivity extends AppCompatActivity {
         redirectActivity();
     }
 
-    private void calculateImc(){
+    /**
+     * Calculates the Body Mass Index (BMI) of the user and updates the UI with the result.
+     */
+    private void calculateImc() {
         if (mAuth.getCurrentUser() != null) {
             String email = mAuth.getCurrentUser().getEmail();
 
@@ -50,29 +56,28 @@ public class ImcActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        // Coger los datos del usuario
+                        // Retrieve user data
                         double height = Double.parseDouble(document.getString("height"));
                         double weight = Double.parseDouble(document.getString("weight"));
                         int age = Integer.parseInt(document.getString("age"));
-                        Toast.makeText(ImcActivity.this, "height"+height+"weight"+weight, Toast.LENGTH_SHORT).show();
 
-                        // Convertir altura a metros
+                        // Convert height to meters
                         double heightInM = height / 100;
-                        // Calcular IMC
+                        // Calculate BMI
                         double imc = weight / Math.pow(heightInM, 2);
 
-                        // Guardar IMC en Firestore
+                        // Save BMI to Firestore
                         db.collection("users").document(email)
                                 .update("bmi", imc)
                                 .addOnSuccessListener(aVoid -> {
-                                    // Mostrar resultados
+                                    // Display results
                                     ageTxt.setText(String.valueOf(age));
                                     imcTxt.setText(String.format("%.2f", imc));
-                                    conditionTxt.setText(Utils.getCategory((float) imc,this));
+                                    conditionTxt.setText(Utils.getCategory((float) imc, this));
                                     suggestionTxt.setText(Utils.getSuggestions((float) imc, this));
                                 })
                                 .addOnFailureListener(e -> {
-                                    Toast.makeText(ImcActivity.this, "Error saving IMC", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ImcActivity.this, "Error saving BMI", Toast.LENGTH_SHORT).show();
                                 });
                     } else {
                         Toast.makeText(ImcActivity.this, "User document does not exist", Toast.LENGTH_SHORT).show();
@@ -86,7 +91,10 @@ public class ImcActivity extends AppCompatActivity {
         }
     }
 
-    private void redirectActivity(){
+    /**
+     * Redirects to the MainActivity upon button click.
+     */
+    private void redirectActivity() {
         nextButton.setOnClickListener(view -> {
             Intent intent = new Intent(ImcActivity.this, MainActivity.class);
             startActivity(intent);

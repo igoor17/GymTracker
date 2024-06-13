@@ -144,6 +144,11 @@
     <string name="wristbands">Muñequeras</string>
     <string name="category_accessories">accessories_es</string>
     <string name="category_nutrition">nutrition_es</string>
+    <string name="hsn">HSN</string>
+    <string name="myprotein">MyProtein</string>
+    <string name="prozis">Prozis</string>
+    <string name="productimage">Imagen del Producto</string>
+    <string name="failed_to_write_document">Error al escribir el documento</string>
     <string-array name="days_of_week">
         <item>Lunes</item>
         <item>Martes</item>

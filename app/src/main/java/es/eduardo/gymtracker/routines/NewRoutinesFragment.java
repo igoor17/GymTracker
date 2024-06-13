@@ -28,6 +28,9 @@ import java.util.Random;
 import es.eduardo.gymtracker.R;
 import es.eduardo.gymtracker.exercises.Exercise;
 
+/**
+ * Fragment for creating and saving new workout routines.
+ */
 public class NewRoutinesFragment extends Fragment {
 
     // Firebase
@@ -37,9 +40,9 @@ public class NewRoutinesFragment extends Fragment {
     private HashMap<Integer, List<Exercise>> selectedExercisesPerDay = new HashMap<>();
 
     // UI
-    private ChipGroup daysChipGroup;
-    private Button saveButton;
-    private EditText routineNameEditText;
+    private ChipGroup daysChipGroup; // ChipGroup for selecting days of the week
+    private Button saveButton; // Button to save the routine
+    private EditText routineNameEditText; // EditText for entering routine name
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,6 +63,11 @@ public class NewRoutinesFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Handles the selection of a day and updates the UI to show exercises for that day.
+     *
+     * @param day The selected day of the week (1-7, where 1 is Monday).
+     */
     public void onDaySelected(int day) {
         List<Exercise> selectedExercises = selectedExercisesPerDay.get(day);
         if (selectedExercises == null) {
@@ -74,6 +82,12 @@ public class NewRoutinesFragment extends Fragment {
         fragmentTransaction.commit();
     }
 
+    /**
+     * Handles the selection of an exercise on a specific day.
+     *
+     * @param day      The day of the week (1-7) on which the exercise is selected.
+     * @param exercise The exercise that was selected.
+     */
     public void onExerciseSelected(int day, Exercise exercise) {
         List<Exercise> selectedExercises = selectedExercisesPerDay.get(day);
         if (!selectedExercises.contains(exercise)) {
@@ -81,36 +95,45 @@ public class NewRoutinesFragment extends Fragment {
         }
     }
 
+    /**
+     * Handles the deselection of an exercise on a specific day.
+     *
+     * @param day      The day of the week (1-7) on which the exercise is deselected.
+     * @param exercise The exercise that was deselected.
+     */
     public void onExerciseDeselected(int day, Exercise exercise) {
         List<Exercise> selectedExercises = selectedExercisesPerDay.get(day);
         selectedExercises.remove(exercise);
     }
 
+    /**
+     * Handles the click event when the save button is clicked to save the routine and its exercises.
+     */
     public void onSaveButtonClicked() {
         String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
         String routineName = routineNameEditText.getText().toString();
 
-        // Obtener el array con los nombres de los días de la semana en inglés de los recursos
+        // Get the array with the names of the days of the week in English from resources
         String[] daysOfWeek = getResources().getStringArray(R.array.days_of_week);
 
-        // Obtener una referencia a la carpeta "rutinas" en el almacenamiento de Firebase
+        // Get a reference to the "rutinas" folder in Firebase Storage
         StorageReference routinesFolderRef = FirebaseStorage.getInstance().getReference().child("rutinas");
 
         routinesFolderRef.listAll()
                 .addOnSuccessListener(listResult -> {
-                    // Obtener una lista de todas las fotos en la carpeta "rutinas"
+                    // Get a list of all photos in the "rutinas" folder
                     List<StorageReference> photos = listResult.getItems();
 
-                    // Seleccionar una foto aleatoria de la lista
+                    // Select a random photo from the list
                     int randomIndex = new Random().nextInt(photos.size());
                     StorageReference randomPhotoRef = photos.get(randomIndex);
 
-                    // Obtener la URL de descarga de la foto aleatoria
+                    // Get the download URL of the random photo
                     randomPhotoRef.getDownloadUrl()
                             .addOnSuccessListener(uri -> {
                                 String photoDownloadUrl = uri.toString();
 
-                                // Contar el número total de ejercicios
+                                // Count the total number of exercises
                                 int daysWithExercises = 0;
                                 int totalExercises = 0;
                                 for (List<Exercise> exercises : selectedExercisesPerDay.values()) {
@@ -120,18 +143,18 @@ public class NewRoutinesFragment extends Fragment {
                                     }
                                 }
 
-                                // Crear un mapa para guardar los detalles de la rutina
+                                // Create a map to store routine details
                                 Map<String, Object> routineDetails = new HashMap<>();
                                 routineDetails.put("imageUrl", photoDownloadUrl);
-                                routineDetails.put("days", daysWithExercises); // Número de días
-                                routineDetails.put("exercises", totalExercises); // Número total de ejercicios
+                                routineDetails.put("days", daysWithExercises); // Number of days
+                                routineDetails.put("exercises", totalExercises); // Total number of exercises
 
-                                // Guardar los detalles de la rutina en Firestore
+                                // Save routine details to Firestore
                                 db.collection("users").document(userEmail)
                                         .collection("routines").document(routineName)
                                         .set(routineDetails, SetOptions.merge());
 
-                                // Guardar los detalles de los ejercicios en Firestore
+                                // Save exercise details to Firestore
                                 for (Map.Entry<Integer, List<Exercise>> entry : selectedExercisesPerDay.entrySet()) {
                                     int day = entry.getKey();
                                     List<Exercise> selectedExercises = entry.getValue();
@@ -139,13 +162,13 @@ public class NewRoutinesFragment extends Fragment {
                                     String dayName = daysOfWeek[day - 1];
 
                                     for (Exercise exercise : selectedExercises) {
-                                        // Crear un mapa para guardar los detalles del ejercicio
+                                        // Create a map to store exercise details
                                         Map<String, Object> exerciseDetails = new HashMap<>();
                                         exerciseDetails.put("name", exercise.getName());
-                                        exerciseDetails.put("weight", 0); // Puedes actualizar estos valores más tarde
-                                        exerciseDetails.put("reps", 0); // Puedes actualizar estos valores más tarde
+                                        exerciseDetails.put("weight", 0); // You can update these values later
+                                        exerciseDetails.put("reps", 0); // You can update these values later
 
-                                        // Guardar los detalles del ejercicio en Firestore
+                                        // Save exercise details to Firestore
                                         db.collection("users").document(userEmail)
                                                 .collection("routines").document(routineName)
                                                 .collection("exercises").document(dayName)

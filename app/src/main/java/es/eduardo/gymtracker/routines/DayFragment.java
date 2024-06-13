@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.chip.Chip;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,33 +21,40 @@ import java.util.List;
 import es.eduardo.gymtracker.R;
 import es.eduardo.gymtracker.exercises.Exercise;
 import es.eduardo.gymtracker.exercises.ExerciseAdapter;
-
 import com.google.android.material.chip.ChipGroup;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+/**
+ * Fragment for displaying exercises for a specific day of the week and managing their selection.
+ */
 public class DayFragment extends Fragment {
 
     // Firebase
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    // Argumentos
-    public static final String ARG_DAY = "day"; // Clave utilizada para pasar el día como argumento entre fragmentos
+    // Arguments
+    public static final String ARG_DAY = "day"; // Key used to pass the day as an argument between fragments
 
     // Variables
-    private int day; // Día de la semana para el que se está creando la rutina
-    private List<Exercise> selectedExercises; // Lista de ejercicios seleccionados para el día especificado
-    private String muscleGroup; // Grupo muscular seleccionado para filtrar los ejercicios
+    private int day; // Day of the week for which the routine is being created
+    private List<Exercise> selectedExercises; // List of exercises selected for the specified day
+    private String muscleGroup; // Selected muscle group to filter exercises
 
     // UI
-    private RecyclerView exercisesRecyclerView; // Lista de ejercicios disponibles
-    private RecyclerView selectedExercisesRecyclerView; // Lista de ejercicios seleccionados
-    private ChipGroup muscleGroupChipGroup; // Botones de grupos musculares
+    private RecyclerView exercisesRecyclerView; // RecyclerView for displaying available exercises
+    private RecyclerView selectedExercisesRecyclerView; // RecyclerView for displaying selected exercises
+    private ChipGroup muscleGroupChipGroup; // ChipGroup for muscle group selection
 
     // Adapters
     private ExerciseAdapter exercisesAdapter;
     private ExerciseAdapter selectedExercisesAdapter;
 
-
+    /**
+     * Creates a new instance of DayFragment with the given day and selected exercises.
+     *
+     * @param day               The day of the week (1-7, where 1 is Monday).
+     * @param selectedExercises List of exercises already selected for this day.
+     * @return A new instance of DayFragment.
+     */
     public static DayFragment newInstance(int day, List<Exercise> selectedExercises) {
         DayFragment fragment = new DayFragment();
         fragment.day = day;
@@ -65,7 +73,6 @@ public class DayFragment extends Fragment {
         selectedExercisesRecyclerView.setNestedScrollingEnabled(false);
         muscleGroupChipGroup = view.findViewById(R.id.muscle_group_chip_group);
 
-
         if (getArguments() != null) {
             int day = getArguments().getInt(ARG_DAY);
             String[] daysOfWeek = getResources().getStringArray(R.array.days_of_week);
@@ -74,7 +81,6 @@ public class DayFragment extends Fragment {
 
         exercisesAdapter = new ExerciseAdapter(new ArrayList<>(), this::onExerciseSelected);
         selectedExercisesAdapter = new ExerciseAdapter(selectedExercises, this::onExerciseDeselected);
-
 
         exercisesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         exercisesRecyclerView.setAdapter(exercisesAdapter);
@@ -93,6 +99,9 @@ public class DayFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Loads exercises from Firestore based on the selected muscle group and updates the UI.
+     */
     private void loadExercisesFromFirestore() {
         db.collection("muscleGroup").document(muscleGroup).collection("exercises")
                 .get()
@@ -113,11 +122,21 @@ public class DayFragment extends Fragment {
                 });
     }
 
+    /**
+     * Callback method invoked when an exercise is selected.
+     *
+     * @param exercise The selected exercise.
+     */
     public void onExerciseSelected(Exercise exercise) {
         ((NewRoutinesFragment) getParentFragment()).onExerciseSelected(day, exercise);
         selectedExercisesAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Callback method invoked when an exercise is deselected.
+     *
+     * @param exercise The deselected exercise.
+     */
     public void onExerciseDeselected(Exercise exercise) {
         ((NewRoutinesFragment) getParentFragment()).onExerciseDeselected(day, exercise);
         selectedExercisesAdapter.notifyDataSetChanged();

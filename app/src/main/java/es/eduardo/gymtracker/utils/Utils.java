@@ -4,8 +4,18 @@ import android.content.Context;
 
 import es.eduardo.gymtracker.R;
 
+/**
+ * Utility class containing static methods for various fitness-related calculations and localization.
+ */
 public class Utils {
 
+    /**
+     * Returns the category based on the BMI result.
+     *
+     * @param result  The BMI result to determine the category.
+     * @param context The context to access string resources.
+     * @return The category corresponding to the BMI result.
+     */
     public static String getCategory(float result, Context context) {
         String category;
         if (result < 15) {
@@ -28,6 +38,13 @@ public class Utils {
         return category;
     }
 
+    /**
+     * Returns suggestions based on the BMI result.
+     *
+     * @param result  The BMI result to determine the suggestions.
+     * @param context The context to access string resources.
+     * @return Suggestions corresponding to the BMI result.
+     */
     public static String getSuggestions(float result, Context context) {
         String suggestion;
         if (result < 18.5) {
@@ -42,8 +59,14 @@ public class Utils {
         return suggestion;
     }
 
+    /**
+     * Translates a muscle group name into the corresponding localized string.
+     *
+     * @param muscleGroup The muscle group name to be translated.
+     * @param context     The context to access string resources.
+     * @return The translated muscle group name or the original name if not found.
+     */
     public static String getTranslatedMuscleGroup(String muscleGroup, Context context) {
-
         switch (muscleGroup.toLowerCase()) {
             case "back":
                 return context.getString(R.string.muscle_group_back);

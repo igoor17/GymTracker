@@ -4,9 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,36 +20,38 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+/**
+ * RegisterActivity handles user registration using Firebase Authentication and Firestore.
+ */
 public class RegisterActivity extends AppCompatActivity {
 
-    //Firebase
+    // Firebase
     FirebaseFirestore db;
     FirebaseAuth mAuth;
-    FirebaseStorage storage;
-    //UI
+
+    // UI
     EditText name, username, email, password, confirmPassword;
     Button signUpButton;
 
+    // Executor for background tasks
     Executor executor = Executors.newSingleThreadExecutor();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        // Initialize Firebase
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-        storage = FirebaseStorage.getInstance();
 
+        // Initialize UI elements
         name = findViewById(R.id.signup_name);
         username = findViewById(R.id.signup_username);
         email = findViewById(R.id.signup_email);
@@ -60,11 +59,14 @@ public class RegisterActivity extends AppCompatActivity {
         confirmPassword = findViewById(R.id.signup_confirm_password);
         signUpButton = findViewById(R.id.signUpButton);
 
+        // Register button click listener
         register();
-
     }
 
-    private void register(){
+    /**
+     * Handles the registration process when the signUpButton is clicked.
+     */
+    private void register() {
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,7 +79,8 @@ public class RegisterActivity extends AppCompatActivity {
                         String passwordText = password.getText().toString();
                         String confirmPasswordText = confirmPassword.getText().toString();
 
-                        if(nameText.isEmpty() || usernameText.isEmpty() || emailText.isEmpty() || passwordText.isEmpty() || confirmPasswordText.isEmpty()) {
+                        // Validate input fields
+                        if (nameText.isEmpty() || usernameText.isEmpty() || emailText.isEmpty() || passwordText.isEmpty() || confirmPasswordText.isEmpty()) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -87,7 +90,7 @@ public class RegisterActivity extends AppCompatActivity {
                             return;
                         }
 
-                        if(passwordText.length() < 6) {
+                        if (passwordText.length() < 6) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -97,7 +100,7 @@ public class RegisterActivity extends AppCompatActivity {
                             return;
                         }
 
-                        if(!passwordText.equals(confirmPasswordText)) {
+                        if (!passwordText.equals(confirmPasswordText)) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -107,6 +110,7 @@ public class RegisterActivity extends AppCompatActivity {
                             return;
                         }
 
+                        // Check if username already exists in Firestore
                         db.collection("users")
                                 .whereEqualTo("username", usernameText)
                                 .get()
@@ -121,7 +125,7 @@ public class RegisterActivity extends AppCompatActivity {
                                                             @Override
                                                             public void onComplete(@NonNull Task<AuthResult> task) {
                                                                 if (task.isSuccessful()) {
-                                                                    // Code to execute after successful registration
+                                                                    // Registration successful, save user data to Firestore
                                                                     FirebaseUser user = mAuth.getCurrentUser();
                                                                     Map<String, Object> userMap = new HashMap<>();
                                                                     userMap.put("name", nameText);
@@ -147,19 +151,18 @@ public class RegisterActivity extends AppCompatActivity {
                                                                                 }
                                                                             });
                                                                 } else {
-                                                                    // If sign in fails, display a message to the user.
+                                                                    // Registration failed
                                                                     runOnUiThread(new Runnable() {
                                                                         @Override
                                                                         public void run() {
-                                                                            Toast.makeText(RegisterActivity.this, getString(R.string.auth_failed),
-                                                                                    Toast.LENGTH_SHORT).show();
+                                                                            Toast.makeText(RegisterActivity.this, getString(R.string.auth_failed), Toast.LENGTH_SHORT).show();
                                                                         }
                                                                     });
                                                                 }
                                                             }
                                                         });
                                             } else {
-                                                // Nombre de usuario existe
+                                                // Username already exists
                                                 runOnUiThread(new Runnable() {
                                                     @Override
                                                     public void run() {
@@ -168,6 +171,7 @@ public class RegisterActivity extends AppCompatActivity {
                                                 });
                                             }
                                         } else {
+                                            // Error getting documents
                                             Log.d("Firestore Error", "Error getting documents: ", task.getException());
                                         }
                                     }

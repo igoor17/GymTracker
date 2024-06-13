@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -29,19 +28,18 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-
-import es.eduardo.gymtracker.utils.Utils;
-
+/**
+ * Activity responsible for user login using email/password or Google Sign-In.
+ */
 public class LoginActivity extends AppCompatActivity {
-    //Firebase
+
+    // Firebase
     FirebaseAuth mAuth;
     FirebaseFirestore db;
     GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 9001;
 
-    //UI
+    // UI
     EditText username, password;
     Button loginButton;
     TextView RedirectSignUpText;
@@ -56,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
+        // Initialize UI elements
         username = findViewById(R.id.login_username);
         password = findViewById(R.id.login_password);
         loginButton = findViewById(R.id.loginButton);
@@ -63,6 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         RedirectForgotPassText = findViewById(R.id.forgotPasswordText);
         googleLoginButton = findViewById(R.id.googleLoginButton);
 
+        // Configure Google Sign-In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -70,6 +70,7 @@ public class LoginActivity extends AppCompatActivity {
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
+        // Set click listener for Google Sign-In button
         googleLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,31 +78,18 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        // Set click listeners for redirecting to Signup and Forgot Password activities
         redirectSignUp();
         redirectForgotPass();
+
+        // Set click listener for the login button
         login();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                loginWithGoogle(account.getIdToken());
-            } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
-                Log.w("Google sign in failed", e);
-            }
-        }
-    }
-
-    private void redirectSignUp(){
-        // Redirige al usuario a la actividad de registro
+    /**
+     * Redirects the user to the Signup activity when clicked.
+     */
+    private void redirectSignUp() {
         RedirectSignUpText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -109,11 +97,12 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
 
-    private void redirectForgotPass(){
-        // Redirige al usuario a la actividad de restablecimiento de contraseña
+    /**
+     * Redirects the user to the Forgot Password activity when clicked.
+     */
+    private void redirectForgotPass() {
         RedirectForgotPassText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -121,21 +110,23 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
 
-    private void login(){
+    /**
+     * Handles user login based on username/email and password.
+     */
+    private void login() {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String usernameOrEmail = username.getText().toString();
                 String passwordText = password.getText().toString();
 
-                if(usernameOrEmail.isEmpty() || passwordText.isEmpty()) {
+                if (usernameOrEmail.isEmpty() || passwordText.isEmpty()) {
                     return;
                 }
 
-                // Primero, intenta buscar el nombre de usuario en Firestore
+                // Attempt to find the username in Firestore
                 db.collection("users")
                         .whereEqualTo("username", usernameOrEmail)
                         .get()
@@ -144,37 +135,37 @@ public class LoginActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                 if (task.isSuccessful()) {
                                     if (!task.getResult().isEmpty()) {
-                                        // El nombre de usuario existe, obtener el correo electrónico
+                                        // Username exists, get the associated email
                                         String email = task.getResult().getDocuments().get(0).getString("email");
 
-                                        // Iniciar sesión con FirebaseAuth
+                                        // Sign in with FirebaseAuth
                                         mAuth.signInWithEmailAndPassword(email, passwordText)
                                                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<AuthResult> task) {
                                                         if (task.isSuccessful()) {
-                                                            // Inicio de sesión exitoso
+                                                            // Successful login
                                                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                                             startActivity(intent);
                                                         } else {
-                                                            // Si el inicio de sesión falla, mostrar un mensaje al usuario
+                                                            // If login fails, display a message to the user
                                                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                                                     Toast.LENGTH_SHORT).show();
                                                         }
                                                     }
                                                 });
                                     } else {
-                                        // El nombre de usuario no existe, intenta iniciar sesión asumiendo que la entrada es un correo electrónico
+                                        // Username doesn't exist, assume input is an email and try to login
                                         mAuth.signInWithEmailAndPassword(usernameOrEmail, passwordText)
                                                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<AuthResult> task) {
                                                         if (task.isSuccessful()) {
-                                                            // Inicio de sesión exitoso
+                                                            // Successful login
                                                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                                             startActivity(intent);
                                                         } else {
-                                                            // Si el inicio de sesión falla, mostrar un mensaje al usuario
+                                                            // If login fails, display a message to the user
                                                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                                                     Toast.LENGTH_SHORT).show();
                                                         }
@@ -190,7 +181,11 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void loginWithGoogle(String idToken){
+    /**
+     * Handles Google Sign-In authentication.
+     * @param idToken The ID token received from Google Sign-In.
+     */
+    private void loginWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -209,19 +204,26 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Initiates Google Sign-In by starting the intent from GoogleSignInClient.
+     */
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+    /**
+     * Redirects the user to the appropriate activity based on their sign-in status.
+     * @param user The FirebaseUser object representing the signed-in user.
+     */
     private void updateUI(FirebaseUser user) {
         if (user != null) {
             if (user.getMetadata().getCreationTimestamp() == user.getMetadata().getLastSignInTimestamp()) {
-                // The user is new, redirect to NewUserInfoActivity
+                // New user, redirect to NewUserInfoActivity
                 Intent intent = new Intent(LoginActivity.this, NewUserInfoActivity.class);
                 startActivity(intent);
             } else {
-                // The user is existing, redirect to MainActivity
+                // Existing user, redirect to MainActivity
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
             }

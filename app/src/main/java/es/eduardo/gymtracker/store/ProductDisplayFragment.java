@@ -17,9 +17,12 @@ import java.util.List;
 
 import es.eduardo.gymtracker.R;
 
+/**
+ * Fragment to display products from different stores categorized by store name.
+ */
 public class ProductDisplayFragment extends Fragment {
 
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -29,27 +32,28 @@ public class ProductDisplayFragment extends Fragment {
         String category = getArguments().getString("category");
         String product = getArguments().getString("product");
 
-        // Inicializa los RecyclerViews
+        // Initialize RecyclerViews
         RecyclerView hsnRecyclerView = view.findViewById(R.id.hsnRecyclerView);
         RecyclerView myProteinRecyclerView = view.findViewById(R.id.myProteinRecyclerView);
         RecyclerView prozisRecyclerView = view.findViewById(R.id.prozisRecyclerView);
 
+        // Set layout managers for RecyclerViews
         hsnRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         myProteinRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         prozisRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Inicializa los adaptadores con listas vacías
+        // Initialize adapters with empty lists
         List<Product> emptyList = new ArrayList<>();
         ProductAdapter hsnAdapter = new ProductAdapter(emptyList, getContext());
         ProductAdapter myProteinAdapter = new ProductAdapter(emptyList, getContext());
         ProductAdapter prozisAdapter = new ProductAdapter(emptyList, getContext());
 
-        // Establece los adaptadores en los RecyclerViews
+        // Set adapters to RecyclerViews
         hsnRecyclerView.setAdapter(hsnAdapter);
         myProteinRecyclerView.setAdapter(myProteinAdapter);
         prozisRecyclerView.setAdapter(prozisAdapter);
 
-        // Realiza las consultas y actualiza los adaptadores
+        // Query and update adapters with store products
         updateAdapterWithStoreProducts(category, product, "HSN", hsnAdapter);
         updateAdapterWithStoreProducts(category, product, "MyProtein", myProteinAdapter);
         updateAdapterWithStoreProducts(category, product, "Prozis", prozisAdapter);
@@ -57,6 +61,14 @@ public class ProductDisplayFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Queries Firestore for products from a specific store and updates the provided adapter with the results.
+     *
+     * @param category Category of the product.
+     * @param product  Type of the product.
+     * @param store    Name of the store to query.
+     * @param adapter  Adapter to update with queried products.
+     */
     private void updateAdapterWithStoreProducts(String category, String product, String store, ProductAdapter adapter) {
         db.collection("store").document(category).collection(product).document("stores").collection(store)
                 .get()
@@ -66,7 +78,7 @@ public class ProductDisplayFragment extends Fragment {
                         Product productItem = storeDocument.toObject(Product.class);
                         products.add(productItem);
                     }
-                    // Actualiza la lista en el adaptador y notifica al adaptador que los datos han cambiado
+                    // Update the adapter's list and notify that the data set has changed
                     adapter.updateList(products);
                 });
     }

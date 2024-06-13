@@ -20,6 +20,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import es.eduardo.gymtracker.R;
 
+/**
+ * A fragment that displays the details of a gym and allows the user to delete the gym from their favorites.
+ */
 public class GymDisplayFragment extends Fragment {
 
     FirebaseFirestore db;
@@ -29,6 +32,14 @@ public class GymDisplayFragment extends Fragment {
     private TextView phoneNumberTextView;
     private Button deleteButton;
 
+    /**
+     * Called to have the fragment instantiate its user interface view.
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate any views in the fragment
+     * @param container If non-null, this is the parent view that the fragment's UI should be attached to
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here
+     * @return Return the View for the fragment's UI, or null
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -52,11 +63,14 @@ public class GymDisplayFragment extends Fragment {
             onDeleteButton(name);
         }
 
-
-
         return view;
     }
 
+    /**
+     * Sets up the delete button to remove the gym from the user's favorites in Firestore.
+     *
+     * @param gymName The name of the gym to be deleted
+     */
     private void onDeleteButton(String gymName) {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override

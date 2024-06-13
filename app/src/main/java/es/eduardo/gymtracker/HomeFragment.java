@@ -1,23 +1,19 @@
 package es.eduardo.gymtracker;
 
-import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -27,9 +23,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import es.eduardo.gymtracker.exercises.ExercisesFragment;
 import es.eduardo.gymtracker.routines.Routine;
@@ -37,7 +31,9 @@ import es.eduardo.gymtracker.routines.RoutineAdapter;
 import es.eduardo.gymtracker.routines.RoutineDisplayFragment;
 import es.eduardo.gymtracker.store.Product;
 
-
+/**
+ * Fragment for displaying home screen with muscle group icons and user routines.
+ */
 public class HomeFragment extends Fragment {
 
     // Firebase
@@ -48,6 +44,8 @@ public class HomeFragment extends Fragment {
     ImageView backImageView;
     ImageView armsImageView;
     ImageView legsImageView;
+    ImageView absImageView;
+    ImageView shouldersImageView;
 
     // User Routines
     ViewPager2 viewPager;
@@ -62,6 +60,8 @@ public class HomeFragment extends Fragment {
         backImageView = view.findViewById(R.id.back);
         armsImageView = view.findViewById(R.id.arms);
         legsImageView = view.findViewById(R.id.legs);
+        absImageView = view.findViewById(R.id.abs);
+        shouldersImageView = view.findViewById(R.id.shoulders);
 
         viewPager = view.findViewById(R.id.viewPager);
         noRoutinesTextView = view.findViewById(R.id.noRoutinesTextView);
@@ -109,14 +109,15 @@ public class HomeFragment extends Fragment {
         backImageView.setOnClickListener(imageViewClickListener);
         armsImageView.setOnClickListener(imageViewClickListener);
         legsImageView.setOnClickListener(imageViewClickListener);
-
-
-
+        absImageView.setOnClickListener(imageViewClickListener);
+        shouldersImageView.setOnClickListener(imageViewClickListener);
 
         return view;
     }
 
-
+    /**
+     * Loads user routines from Firestore and displays them in ViewPager.
+     */
     private void loadRoutines() {
         String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
@@ -128,10 +129,10 @@ public class HomeFragment extends Fragment {
                         if (task.isSuccessful()) {
                             List<Routine> routines = new ArrayList<>();
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                String name = document.getId(); // Obtener el nombre de la rutina
-                                String imageUrl = document.getString("imageUrl"); // Obtener la URL de la imagenº
-                                Long daysLong = document.getLong("days"); // Obtener el número de días
-                                Long totalExercisesLong = document.getLong("exercises"); // Obtener el número total de ejercicios
+                                String name = document.getId(); // Get routine name
+                                String imageUrl = document.getString("imageUrl"); // Get image URL
+                                Long daysLong = document.getLong("days"); // Get number of days
+                                Long totalExercisesLong = document.getLong("exercises"); // Get total exercises count
 
                                 int days = daysLong != null ? daysLong.intValue() : 0;
                                 int totalExercises = totalExercisesLong != null ? totalExercisesLong.intValue() : 0;
@@ -155,6 +156,10 @@ public class HomeFragment extends Fragment {
                         }
                     }
 
+                    /**
+                     * Callback method when a routine is selected.
+                     * @param routine The selected routine object.
+                     */
                     private void onRoutineSelected(Routine routine) {
                         RoutineDisplayFragment routineDisplayFragment = new RoutineDisplayFragment();
                         Bundle bundle = new Bundle();
@@ -171,8 +176,4 @@ public class HomeFragment extends Fragment {
                     }
                 });
     }
-
-
-
-
 }

@@ -41,16 +41,19 @@ import es.eduardo.gymtracker.utils.AlarmReceiver;
 import es.eduardo.gymtracker.utils.LanguageAdapter;
 import es.eduardo.gymtracker.utils.LanguageItem;
 
+/**
+ * Fragment for managing user settings including language selection, notifications, and logout functionality.
+ */
 public class SettingsFragment extends Fragment {
 
-    // UI
+    // UI elements
     Spinner languageSpinner;
     Button saveButton;
     Button logoutButton;
     TextView helpText;
     Switch weightSwitch;
 
-    // Idioma seleccionado
+    // Selected language code
     String selectedLanguageCode;
 
     @Override
@@ -65,26 +68,26 @@ public class SettingsFragment extends Fragment {
         helpText = view.findViewById(R.id.help_text_view);
         weightSwitch = view.findViewById(R.id.switch_notifications);
 
+        // Underline the help text
         String text = helpText.getText().toString();
         SpannableString spannableString = new SpannableString(text);
         spannableString.setSpan(new UnderlineSpan(), 0, text.length(), 0);
         helpText.setText(spannableString);
 
+        // Load notification preference
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("NotificationPref", Context.MODE_PRIVATE);
         boolean isNotificationOn = sharedPreferences.getBoolean("isNotificationOn", false); // Default is false
         weightSwitch.setChecked(isNotificationOn);
 
-
+        // Initialize language spinner
         List<LanguageItem> languageItems = new ArrayList<>();
         languageItems.add(new LanguageItem(getString(R.string.english), R.drawable.en_flag));
         languageItems.add(new LanguageItem(getString(R.string.spanish), R.drawable.sp_flag));
-
         LanguageAdapter languageAdapter = new LanguageAdapter(getContext(), languageItems);
-
         languageSpinner.setAdapter(languageAdapter);
 
+        // Load saved language preference
         String savedLanguage = loadLanguagePreference();
-
         int languagePosition = getLanguagePosition(savedLanguage);
         languageSpinner.setSelection(languagePosition);
 
@@ -97,9 +100,11 @@ public class SettingsFragment extends Fragment {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+                // No action needed
             }
         });
 
+        // Save button click listener
         saveButton.setOnClickListener(v -> {
             if (weightSwitch.isChecked()) {
                 setWeightReminder();
@@ -110,22 +115,24 @@ public class SettingsFragment extends Fragment {
             saveLanguage();
         });
 
+        // Logout button click listener
         logoutButton.setOnClickListener(v -> {
             logout();
         });
 
-        helpText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.frame_layout, new HelpFragment());
-                transaction.commit();
-            }
+        // Help text click listener
+        helpText.setOnClickListener(v -> {
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.frame_layout, new HelpFragment());
+            transaction.commit();
         });
 
         return view;
     }
 
+    /**
+     * Saves the selected language code to preferences, changes the app locale, and restarts MainActivity.
+     */
     private void saveLanguage() {
         setAppLocale(selectedLanguageCode);
         saveLanguagePreference(selectedLanguageCode);
@@ -135,6 +142,9 @@ public class SettingsFragment extends Fragment {
         startActivity(intent);
     }
 
+    /**
+     * Logs out the current user and navigates to LoginActivity.
+     */
     private void logout() {
         FirebaseAuth.getInstance().signOut();
         Intent intent = new Intent(getContext(), LoginActivity.class);
@@ -142,6 +152,11 @@ public class SettingsFragment extends Fragment {
         startActivity(intent);
     }
 
+    /**
+     * Saves the selected language preference to SharedPreferences.
+     *
+     * @param language The selected language code ("en" for English, "es" for Spanish).
+     */
     private void saveLanguagePreference(String language) {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LanguagePref", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -149,11 +164,21 @@ public class SettingsFragment extends Fragment {
         editor.apply();
     }
 
+    /**
+     * Loads the saved language preference from SharedPreferences.
+     *
+     * @return The saved language code, defaulting to "en" (English) if not found.
+     */
     private String loadLanguagePreference() {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LanguagePref", Context.MODE_PRIVATE);
         return sharedPreferences.getString("language", "en"); // Default language is English
     }
 
+    /**
+     * Sets the app's locale based on the selected language code.
+     *
+     * @param languageCode The language code to set ("en" for English, "es" for Spanish).
+     */
     private void setAppLocale(String languageCode) {
         Resources res = getResources();
         DisplayMetrics dm = res.getDisplayMetrics();
@@ -162,6 +187,12 @@ public class SettingsFragment extends Fragment {
         res.updateConfiguration(conf, dm);
     }
 
+    /**
+     * Retrieves the position of the given language code in the language spinner.
+     *
+     * @param languageCode The language code to find position for ("en" or "es").
+     * @return The position of the language in the spinner (0 for English, 1 for Spanish).
+     */
     private int getLanguagePosition(String languageCode) {
         String english = getString(R.string.english);
         String spanish = getString(R.string.spanish);
@@ -173,33 +204,35 @@ public class SettingsFragment extends Fragment {
         return 0; // Default to English
     }
 
+    /**
+     * Sets a weekly alarm reminder for weight tracking, if permission is granted.
+     */
     private void setWeightReminder() {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.SET_ALARM) != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted
+            // Permission is not granted, request it
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.SET_ALARM}, 1);
         } else {
-            // Permission has already been granted
+            // Permission has already been granted, set the alarm
             AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
             Intent intent = new Intent(getActivity(), AlarmReceiver.class);
-            PendingIntent pendingIntent;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
-            } else {
-                pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
-            }
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
-            // Set the alarm to start at approximately 9:00 a.m. on Sunday.
+            // Set the alarm to start at 9:00 a.m. on Sunday, repeating weekly
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(System.currentTimeMillis());
             calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
             calendar.set(Calendar.HOUR_OF_DAY, 9);
 
-            // With setInexactRepeating(), you have to use one of the AlarmManager interval
-            // constants--in this case, AlarmManager.INTERVAL_DAY.
             alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                     AlarmManager.INTERVAL_DAY * 7, pendingIntent);
         }
     }
+
+    /**
+     * Saves the notification preference (on/off) to SharedPreferences.
+     *
+     * @param isOn Boolean indicating whether notifications are turned on or off.
+     */
     private void saveNotificationPreference(boolean isOn) {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("NotificationPref", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -207,12 +240,13 @@ public class SettingsFragment extends Fragment {
         editor.apply();
     }
 
+    /**
+     * Cancels the weekly weight reminder alarm.
+     */
     private void cancelWeightReminder() {
         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getActivity(), AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
         alarmManager.cancel(pendingIntent);
     }
-
-
 }

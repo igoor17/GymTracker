@@ -37,13 +37,16 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+/**
+ * Fragment to display and interact with gyms on a map.
+ */
 public class GymsFragment extends Fragment {
 
     // Firebase
     FirebaseFirestore db;
     FirebaseAuth mAuth;
 
-    // Mapa
+    // Map
     private MapView mapView;
     private MyLocationNewOverlay locationOverlay;
     private OverpassAPI overpassAPI;
@@ -56,7 +59,7 @@ public class GymsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gyms, container, false);
 
-        // Configuración de osmdroid
+        // Configure osmdroid
         Configuration.getInstance().load(getContext(), PreferenceManager.getDefaultSharedPreferences(getContext()));
 
         mapView = view.findViewById(R.id.mapView);
@@ -106,7 +109,6 @@ public class GymsFragment extends Fragment {
         mapView.onResume();
 
         locationOverlay.enableMyLocation();
-
     }
 
     @Override
@@ -128,15 +130,18 @@ public class GymsFragment extends Fragment {
         }
     }
 
+    /**
+     * Updates gyms on the map based on the visible area.
+     */
     private void updateGymsOnMap() {
-        if(mapView == null) {
+        if (mapView == null) {
             Log.e("GymsFragment", "MapView is null");
             return;
         }
-        // Obtén el área visible del mapa
+        // Get the visible area of the map
         BoundingBox visibleArea = mapView.getBoundingBox();
 
-        // Obtén los gimnasios en el área visible
+        // Get gyms in the visible area
         overpassAPI.getNearbyGyms(
                 visibleArea.getLatSouth(),
                 visibleArea.getLonWest(),
@@ -145,10 +150,10 @@ public class GymsFragment extends Fragment {
                 new GymCallback() {
                     @Override
                     public void onGymsReceived(List<Gym> gyms) {
-                        // Elimina los marcadores existentes
+                        // Remove existing markers
                         mapView.getOverlays().clear();
 
-                        // Añade nuevos marcadores para los gimnasios en el área visible
+                        // Add new markers for gyms in the visible area
                         for (Gym gym : gyms) {
                             GeoPoint gymLocation = new GeoPoint(gym.getLatitud(), gym.getLongitud());
 
@@ -176,26 +181,30 @@ public class GymsFragment extends Fragment {
 
                         mapView.getOverlays().add(locationOverlay);
 
-                        // Actualiza el mapa
+                        // Update the map
                         mapView.invalidate();
                     }
                 }
         );
     }
 
-
+    /**
+     * Saves a gym to the user's favorites in Firestore.
+     *
+     * @param gimnasio The Gym object to be saved.
+     */
     private void saveGymToFavorites(Gym gimnasio) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                // Obtiene la instancia de Firestore y de FirebaseAuth
+                // Get Firestore and FirebaseAuth instances
                 db = FirebaseFirestore.getInstance();
                 mAuth = FirebaseAuth.getInstance();
 
-                // Obtén el ID del usuario actual
+                // Get current user's email ID
                 String userEmail = mAuth.getCurrentUser().getEmail();
 
-                // Crea un nuevo documento para el gimnasio
+                // Create a new document for the gym
                 Map<String, Object> gym = new HashMap<>();
                 gym.put("name", gimnasio.getNombre());
                 gym.put("address", gimnasio.getAddress());
@@ -203,7 +212,7 @@ public class GymsFragment extends Fragment {
                 gym.put("lat", gimnasio.getLatitud());
                 gym.put("lon", gimnasio.getLongitud());
 
-                // Guarda el gimnasio en la colección de favoritos del usuario
+                // Save the gym to the user's favorites collection
                 db.collection("users").document(userEmail).collection("favorites").document(gimnasio.getNombre()).set(gym)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override

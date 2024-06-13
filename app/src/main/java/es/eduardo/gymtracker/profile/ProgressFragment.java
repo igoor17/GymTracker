@@ -26,6 +26,9 @@ import java.util.Locale;
 import es.eduardo.gymtracker.R;
 import es.eduardo.gymtracker.utils.MonthAdapter;
 
+/**
+ * Fragment to display user progress by weeks within a specific month.
+ */
 public class ProgressFragment extends Fragment {
 
     private FirebaseFirestore db;
@@ -54,7 +57,6 @@ public class ProgressFragment extends Fragment {
 
         monthSpinner.setAdapter(monthAdapter);
 
-
         monthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -71,13 +73,18 @@ public class ProgressFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Update the UI with user's weekly progress for the selected month.
+     *
+     * @param month The selected month to display progress (e.g., "January", "February").
+     */
     private void updateProgress(String month) {
         int year = Calendar.getInstance().get(Calendar.YEAR);
         Double[] weights = new Double[2]; // Array to hold initial and final weights
         TextView[] weekTextViews = new TextView[4]; // Array to hold the TextViews for the weeks
         progressLayout.removeAllViews(); // Remove all previous TextViews
         for (int i = 1; i <= 4; i++) {
-            final int weekNumber = i; // Variable final that copies the value of i
+            final int weekNumber = i; // Final variable copying the value of i
             String monthNameUpper = month.toUpperCase(Locale.getDefault());
             Month monthEnum = Month.valueOf(monthNameUpper);
             int monthNumber = monthEnum.getValue();

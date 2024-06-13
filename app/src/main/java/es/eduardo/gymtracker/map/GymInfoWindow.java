@@ -21,15 +21,27 @@ import java.util.Map;
 import es.eduardo.gymtracker.R;
 import es.eduardo.gymtracker.gym.Gym;
 
+/**
+ * Custom InfoWindow for displaying Gym information and handling interactions.
+ */
 public class GymInfoWindow extends BasicInfoWindow {
 
     // Firebase
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore db;
+    private FirebaseAuth mAuth; // Firebase Authentication instance
+    private FirebaseFirestore db; // Firebase Firestore instance
 
-    // Gimnasio
-    private Gym gym;
+    // Gym
+    private Gym gym; // Gym object to display information
 
+    /**
+     * Constructor for GymInfoWindow.
+     *
+     * @param layoutResId Layout resource ID for the info window.
+     * @param mapView     MapView associated with the info window.
+     * @param gym         Gym object to display information.
+     * @param mAuth       FirebaseAuth instance for user authentication.
+     * @param db          FirebaseFirestore instance for Firestore database access.
+     */
     public GymInfoWindow(int layoutResId, MapView mapView, Gym gym, FirebaseAuth mAuth, FirebaseFirestore db) {
         super(layoutResId, mapView);
         this.gym = gym;
@@ -37,18 +49,25 @@ public class GymInfoWindow extends BasicInfoWindow {
         this.db = db;
     }
 
+    /**
+     * Called when the info window is opened.
+     *
+     * @param item The item associated with the info window.
+     */
     @Override
     public void onOpen(Object item) {
+        // Initialize views
+        TextView gymName = mView.findViewById(R.id.gym_name);
+        TextView gymAddress = mView.findViewById(R.id.gym_address);
+        TextView gymPhone = mView.findViewById(R.id.gym_phone_number);
 
-        TextView gymName = (TextView) mView.findViewById(R.id.gym_name);
-        TextView gymAddress = (TextView) mView.findViewById(R.id.gym_address);
-        TextView gymPhone = (TextView) mView.findViewById(R.id.gym_phone_number);
-
+        // Set gym information to views
         gymName.setText(gym.getNombre() != null ? gym.getNombre() : "");
         gymAddress.setText(gym.getAddress() != null ? gym.getAddress() : "");
         gymPhone.setText(gym.getPhoneNumber() != null ? gym.getPhoneNumber() : "");
 
-        Button btnAddToFavorites = (Button) mView.findViewById(R.id.btn_add_to_favorites);
+        // Button to add gym to favorites
+        Button btnAddToFavorites = mView.findViewById(R.id.btn_add_to_favorites);
         btnAddToFavorites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,15 +76,20 @@ public class GymInfoWindow extends BasicInfoWindow {
         });
     }
 
+    /**
+     * Saves the gym to user's favorites in Firestore.
+     *
+     * @param gimnasio The Gym object to be saved.
+     */
     private void saveGymToFavorites(Gym gimnasio) {
-        // Obtiene la instancia de Firestore y de FirebaseAuth
+        // Get Firestore and FirebaseAuth instances
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
-        // Obtén el ID del usuario actual
+        // Get current user's email ID
         String userEmail = mAuth.getCurrentUser().getEmail();
 
-        // Crea un nuevo documento para el gimnasio
+        // Create a new document for the gym
         Map<String, Object> gym = new HashMap<>();
         gym.put("name", gimnasio.getNombre());
         gym.put("address", gimnasio.getAddress());
@@ -73,7 +97,7 @@ public class GymInfoWindow extends BasicInfoWindow {
         gym.put("lat", gimnasio.getLatitud());
         gym.put("lon", gimnasio.getLongitud());
 
-        // Guarda el gimnasio en la colección de favoritos del usuario
+        // Save the gym to the user's favorites collection
         db.collection("users").document(userEmail).collection("favorites").document(gimnasio.getNombre()).set(gym)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

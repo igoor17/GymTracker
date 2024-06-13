@@ -19,19 +19,30 @@ import java.util.concurrent.Executors;
 
 import es.eduardo.gymtracker.gym.Gym;
 
+/**
+ * Task to retrieve nearby gyms using Overpass API.
+ */
 public class GetNearbyGymsTask {
-    private static final String OVERPASS_API_URL = "http://overpass-api.de/api/interpreter?data="; // URL de la API de Overpass
+    private static final String OVERPASS_API_URL = "http://overpass-api.de/api/interpreter?data="; // URL of Overpass API
 
-    // Coordenadas que delimitan la zona de búsqueda
-    private double latitudInferior;
-    private double longitudInferior;
-    private double latitudSuperior;
-    private double longitudSuperior;
+    private double latitudInferior; // Lower latitude boundary of the search area
+    private double longitudInferior; // Lower longitude boundary of the search area
+    private double latitudSuperior; // Upper latitude boundary of the search area
+    private double longitudSuperior; // Upper longitude boundary of the search area
 
-    private GymCallback callback; // Interfaz para recibir los gimnasios encontrados
-    private ExecutorService executorService; // Executor para ejecutar la tarea en un hilo en segundo plano
-    private Handler handler; // Handler para ejecutar código en el hilo principal
+    private GymCallback callback; // Interface to receive found gyms
+    private ExecutorService executorService; // Executor to run the task on a background thread
+    private Handler handler; // Handler to execute code on the main thread
 
+    /**
+     * Constructor to initialize the task with search boundaries and callback.
+     *
+     * @param latitudInferior  Lower latitude boundary of the search area.
+     * @param longitudInferior Lower longitude boundary of the search area.
+     * @param latitudSuperior  Upper latitude boundary of the search area.
+     * @param longitudSuperior Upper longitude boundary of the search area.
+     * @param callback         Callback to receive gyms found.
+     */
     public GetNearbyGymsTask(double latitudInferior, double longitudInferior, double latitudSuperior, double longitudSuperior, GymCallback callback) {
         this.latitudInferior = latitudInferior;
         this.longitudInferior = longitudInferior;
@@ -42,6 +53,9 @@ public class GetNearbyGymsTask {
         this.handler = new Handler(Looper.getMainLooper());
     }
 
+    /**
+     * Executes the task to fetch nearby gyms asynchronously.
+     */
     public void execute() {
         executorService.execute(new Runnable() {
             @Override
@@ -57,10 +71,15 @@ public class GetNearbyGymsTask {
         });
     }
 
+    /**
+     * Background task to fetch nearby gyms using Overpass API.
+     *
+     * @return List of Gym objects found.
+     */
     protected List<Gym> doInBackground() {
         String query = "[out:json];node[\"leisure\"=\"fitness_centre\"](" +
-                (latitudInferior) + "," + (longitudInferior) + "," +
-                (latitudSuperior) + "," + (longitudSuperior) + ");out;";
+                latitudInferior + "," + longitudInferior + "," +
+                latitudSuperior + "," + longitudSuperior + ");out;";
         List<Gym> gyms = new ArrayList<>();
         HttpURLConnection connection = null;
         InputStream inputStream = null;
@@ -100,10 +119,21 @@ public class GetNearbyGymsTask {
         return gyms;
     }
 
+    /**
+     * Callback method executed on the main thread after fetching gyms.
+     *
+     * @param gyms List of Gym objects received.
+     */
     protected void onPostExecute(List<Gym> gyms) {
         callback.onGymsReceived(gyms);
     }
 
+    /**
+     * Parses the JSON response from Overpass API to extract Gym objects.
+     *
+     * @param json JSON string received from Overpass API.
+     * @return List of Gym objects parsed from JSON.
+     */
     private List<Gym> parseGymsFromJson(String json) {
         List<Gym> gyms = new ArrayList<>();
 
@@ -116,8 +146,7 @@ public class GetNearbyGymsTask {
                 double lat = element.getDouble("lat");
                 double lon = element.getDouble("lon");
 
-                // Se obtienen los datos del gimnasio desde el JSON
-                // Se utiliza optString en lugar de getString para evitar excepciones en caso de que no exista el campo
+                // Get gym data from JSON
                 String name = element.getJSONObject("tags").optString("name");
                 String street = element.getJSONObject("tags").optString("addr:street");
                 String number = element.getJSONObject("tags").optString("addr:housenumber");
@@ -127,7 +156,7 @@ public class GetNearbyGymsTask {
 
                 String address = street + " " + number + ", " + city + ", " + postalCode;
 
-                gyms.add(new Gym(name,address,phoneNumber ,lat, lon));
+                gyms.add(new Gym(name, address, phoneNumber, lat, lon));
                 Log.d("OverpassAPI", "Parsed " + gyms.size() + " gyms from JSON");
             }
         } catch (Exception e) {
