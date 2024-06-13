@@ -1,5 +1,6 @@
 package es.eduardo.gymtracker.map;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -17,6 +18,7 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import es.eduardo.gymtracker.R;
 import es.eduardo.gymtracker.gym.Gym;
 
 /**
@@ -29,6 +31,8 @@ public class GetNearbyGymsTask {
     private double longitudInferior; // Lower longitude boundary of the search area
     private double latitudSuperior; // Upper latitude boundary of the search area
     private double longitudSuperior; // Upper longitude boundary of the search area
+
+    private Context context; // Context to access resources
 
     private GymCallback callback; // Interface to receive found gyms
     private ExecutorService executorService; // Executor to run the task on a background thread
@@ -43,7 +47,8 @@ public class GetNearbyGymsTask {
      * @param longitudSuperior Upper longitude boundary of the search area.
      * @param callback         Callback to receive gyms found.
      */
-    public GetNearbyGymsTask(double latitudInferior, double longitudInferior, double latitudSuperior, double longitudSuperior, GymCallback callback) {
+    public GetNearbyGymsTask(Context context,double latitudInferior, double longitudInferior, double latitudSuperior, double longitudSuperior, GymCallback callback) {
+        this.context = context;
         this.latitudInferior = latitudInferior;
         this.longitudInferior = longitudInferior;
         this.latitudSuperior = latitudSuperior;
@@ -154,7 +159,13 @@ public class GetNearbyGymsTask {
                 String postalCode = element.getJSONObject("tags").optString("addr:postcode");
                 String phoneNumber = element.getJSONObject("tags").optString("phone");
 
-                String address = street + " " + number + ", " + city + ", " + postalCode;
+                //si la calle, el número, la ciudad o el código postal están vacíos, se muestra un @string de Address not available
+                String address;
+                if (street.isEmpty() || number.isEmpty() || city.isEmpty() || postalCode.isEmpty()) {
+                    address = context.getString(R.string.address_not_available) ;
+                } else {
+                    address = street + " " + number + ", " + postalCode + " " + city;
+                }
 
                 gyms.add(new Gym(name, address, phoneNumber, lat, lon));
                 Log.d("OverpassAPI", "Parsed " + gyms.size() + " gyms from JSON");
@@ -167,3 +178,6 @@ public class GetNearbyGymsTask {
         return gyms;
     }
 }
+
+
+

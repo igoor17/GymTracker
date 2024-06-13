@@ -149,6 +149,7 @@
     <string name="prozis">Prozis</string>
     <string name="productimage">Imagen del Producto</string>
     <string name="failed_to_write_document">Error al escribir el documento</string>
+    <string name="address_not_available">Dirección no disponible</string>
     <string-array name="days_of_week">
         <item>Lunes</item>
         <item>Martes</item>

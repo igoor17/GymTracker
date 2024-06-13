@@ -143,6 +143,7 @@ public class GymsFragment extends Fragment {
 
         // Get gyms in the visible area
         overpassAPI.getNearbyGyms(
+                getContext(),
                 visibleArea.getLatSouth(),
                 visibleArea.getLonWest(),
                 visibleArea.getLatNorth(),

@@ -1,5 +1,7 @@
 package es.eduardo.gymtracker.map;
 
+import android.content.Context;
+
 /**
  * This class interacts with the Overpass API to fetch nearby gyms based on geographical coordinates.
  */
@@ -14,8 +16,8 @@ public class OverpassAPI {
      * @param longitudSuperior Upper longitude bound.
      * @param callback        Callback to receive the result asynchronously.
      */
-    public void getNearbyGyms(double latitudInferior, double longitudInferior,
+    public void getNearbyGyms(Context context, double latitudInferior, double longitudInferior,
                               double latitudSuperior, double longitudSuperior, GymCallback callback) {
-        new GetNearbyGymsTask(latitudInferior, longitudInferior, latitudSuperior, longitudSuperior, callback).execute();
+        new GetNearbyGymsTask(context,latitudInferior, longitudInferior, latitudSuperior, longitudSuperior, callback).execute();
     }
 }
